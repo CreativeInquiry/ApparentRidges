@@ -1,11 +1,19 @@
-// Apparent Ridges 
-// Main Algorithm based on RTSC: https://rtsc.cs.princeton.edu
-// Apparent Ridges Paper: http://people.csail.mit.edu/tjudd/apparentLines.pdf
-
-//haxe apparentridges/ApparentRidges.hx -D real_position --java java/ApparentRidges
-//haxe apparentridges/ApparentRidges.hx --js js/apparentridges.js
-//haxe --version
-//4.1.3
+/***************************************************
+ * Apparent Ridges 
+ *
+ * -- Render line drawings of 3D meshes.
+ *
+ * Main Algorithm based on RTSC (C++): https://rtsc.cs.princeton.edu
+ * Apparent Ridges Paper: http://people.csail.mit.edu/tjudd/apparentLines.pdf
+ *
+ * This haxe port by:
+ * Lingdong Huang 2020, License: GPL v2
+ * Made for STUDIO for Creative Inquiry at CMU
+ *
+ * haxe --version
+ * 4.1.3
+ * See Makefile for build instructions
+ ***************************************************/
 
 package apparentridges;
 
