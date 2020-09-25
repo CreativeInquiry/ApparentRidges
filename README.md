@@ -2,7 +2,7 @@
 
 *Render line drawings from 3D meshes, suitable for plotters*
 
-![](/Users/lingdonghuang/proj/ApparentRidges/samples/nefertiti-0.1.svg)
+![](samples/nefertiti-0.1.svg)
 
 
 ApparentRidges contains an implementation of the paper [Apparent Ridges for Line Drawing by Judd et al. 2007](http://people.csail.mit.edu/tjudd/apparentridges.html). It also includes a software raycaster to cull occluded lines, a custom algorithm to connect ridge segments into continous polylines suitable for plotters, as well as utilities for manipulating meshes and generating depth/normal/curvature maps.
