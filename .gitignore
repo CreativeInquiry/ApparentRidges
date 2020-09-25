@@ -1,0 +1,9 @@
+**/.DS_Store
+**/*.class
+php/
+**/__pycache__
+**/*.pyc
+testdata/
+testdata*/
+**/a.out
+output/
