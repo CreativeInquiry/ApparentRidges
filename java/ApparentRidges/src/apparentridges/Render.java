@@ -365,7 +365,7 @@ public class Render extends haxe.lang.HxObject
 		{
 			if (this.verbose) 
 			{
-				haxe.Log.trace.__hx_invoke2_o(0.0, "precomputing mesh properties...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1537) )) )}));
+				haxe.Log.trace.__hx_invoke2_o(0.0, "precomputing mesh properties...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1545) )) )}));
 			}
 			
 			this.mesh.precompute(( cull1 >= 0 ), this.verbose);
@@ -394,13 +394,13 @@ public class Render extends haxe.lang.HxObject
 		double[] eye = ((double[]) (this6) );
 		if (this.verbose) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "generating apparent ridges...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1545) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "generating apparent ridges...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1553) )) )}));
 		}
 		
 		haxe.root.Array<apparentridges.Ridge> ridges = this.mesh.apparentRidges(eye, thresh);
 		if (this.verbose) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "projecting apparent ridges onto 2D plane...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1547) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "projecting apparent ridges onto 2D plane...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1555) )) )}));
 		}
 		
 		{
@@ -468,7 +468,7 @@ public class Render extends haxe.lang.HxObject
 		
 		if (this.verbose) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "apparent ridges computation finished.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1561) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "apparent ridges computation finished.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "apparentRidges"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1569) )) )}));
 		}
 		
 	}
@@ -479,7 +479,7 @@ public class Render extends haxe.lang.HxObject
 		double epsilon1 = ( (haxe.lang.Runtime.eq(epsilon, null)) ? (((double) (1) )) : (((double) (haxe.lang.Runtime.toDouble(epsilon)) )) );
 		if (this.verbose) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "building polylines from ridge segments...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "buildPolylines"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1565) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "building polylines from ridge segments...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "buildPolylines"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1573) )) )}));
 		}
 		
 		this.polylines = new haxe.root.Array<haxe.root.Array<double[]>>(new haxe.root.Array[]{});
@@ -558,7 +558,7 @@ public class Render extends haxe.lang.HxObject
 		}
 		
 		haxe.root.Array<haxe.root.Array<haxe.root.Array<double[]>>> ends = _g7;
-		haxe.lang.Function singleton = ( (( apparentridges.Render_buildPolylines_1588__Fun.__hx_current != null )) ? (apparentridges.Render_buildPolylines_1588__Fun.__hx_current) : (apparentridges.Render_buildPolylines_1588__Fun.__hx_current = ((apparentridges.Render_buildPolylines_1588__Fun) (new apparentridges.Render_buildPolylines_1588__Fun()) )) );
+		haxe.lang.Function singleton = ( (( apparentridges.Render_buildPolylines_1596__Fun.__hx_current != null )) ? (apparentridges.Render_buildPolylines_1596__Fun.__hx_current) : (apparentridges.Render_buildPolylines_1596__Fun.__hx_current = ((apparentridges.Render_buildPolylines_1596__Fun) (new apparentridges.Render_buildPolylines_1596__Fun()) )) );
 		{
 			int _g10 = 0;
 			int _g11 = this.lines.length;
@@ -722,7 +722,7 @@ public class Render extends haxe.lang.HxObject
 		this.polylines = ret1;
 		if (this.verbose) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "polylines built.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "buildPolylines"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1656) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "polylines built.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Render", "apparentridges/ApparentRidges.hx", "buildPolylines"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (1664) )) )}));
 		}
 		
 	}

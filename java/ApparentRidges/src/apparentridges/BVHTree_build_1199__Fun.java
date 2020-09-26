@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class BVHTree_build_1191__Fun extends haxe.lang.Function
+public class BVHTree_build_1199__Fun extends haxe.lang.Function
 {
-	public BVHTree_build_1191__Fun(haxe.lang.Function[] buildRange, haxe.lang.Function bboxAddFace, apparentridges.BVHTree _gthis)
+	public BVHTree_build_1199__Fun(haxe.lang.Function[] buildRange, haxe.lang.Function bboxAddFace, apparentridges.BVHTree _gthis)
 	{
 		super(2, 0);
 		this.buildRange = buildRange;
@@ -242,7 +242,7 @@ public class BVHTree_build_1191__Fun extends haxe.lang.Function
 			
 		}
 		
-		haxe.lang.Function comp = new apparentridges.BVHTree_build_1257__Fun(minPart, this.bboxAddFace);
+		haxe.lang.Function comp = new apparentridges.BVHTree_build_1265__Fun(minPart, this.bboxAddFace);
 		haxe.root.Array<int[]> sorted = this._gthis.faces.slice(i0, i1);
 		sorted.sort(comp);
 		{

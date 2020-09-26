@@ -149,7 +149,7 @@ public class Ray extends haxe.lang.HxObject
 	{
 		haxe.lang.Function[] hitNode = new haxe.lang.Function[]{null};
 		apparentridges.Ray _gthis = this;
-		hitNode[0] = new apparentridges.Ray_hitBVH_1046__Fun(hitNode, bvh, _gthis);
+		hitNode[0] = new apparentridges.Ray_hitBVH_1054__Fun(hitNode, bvh, _gthis);
 		return ((apparentridges.RayHit) (hitNode[0].__hx_invoke1_o(0.0, bvh.root)) );
 	}
 	

@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class PixelMap_curvature_1747__Fun extends haxe.lang.Function
+public class PixelMap_curvature_1755__Fun extends haxe.lang.Function
 {
-	public PixelMap_curvature_1747__Fun(apparentridges.Render render, double[] data)
+	public PixelMap_curvature_1755__Fun(apparentridges.Render render, double[] data)
 	{
 		super(3, 0);
 		this.render = render;

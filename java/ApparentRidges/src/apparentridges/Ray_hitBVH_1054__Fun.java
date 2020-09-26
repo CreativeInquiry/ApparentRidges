@@ -4,17 +4,14 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class Mesh_visible_986__Fun extends haxe.lang.Function
+public class Ray_hitBVH_1054__Fun extends haxe.lang.Function
 {
-	public Mesh_visible_986__Fun(double r_tmin, double r_tmax, double[] r_o, double[] r_d, haxe.lang.Function[] hitNode, apparentridges.BVHTree bvh)
+	public Ray_hitBVH_1054__Fun(haxe.lang.Function[] hitNode, apparentridges.BVHTree bvh, apparentridges.Ray _gthis)
 	{
 		super(1, 0);
-		this.r_tmin = r_tmin;
-		this.r_tmax = r_tmax;
-		this.r_o = r_o;
-		this.r_d = r_d;
 		this.hitNode = hitNode;
 		this.bvh = bvh;
+		this._gthis = _gthis;
 	}
 	
 	
@@ -46,14 +43,14 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 					((double[]) (this4) )[1] = ( ((double[]) (p2) )[1] - ((double[]) (p0) )[1] );
 					((double[]) (this4) )[2] = ( ((double[]) (p2) )[2] - ((double[]) (p0) )[2] );
 					double[] e2 = ((double[]) (this4) );
-					double[] this5 = this.r_o;
+					double[] this5 = this._gthis.o;
 					double[] this6 = new double[3];
 					double[] this7 = ((double[]) (this6) );
 					((double[]) (this7) )[0] = ( ((double[]) (this5) )[0] - ((double[]) (p0) )[0] );
 					((double[]) (this7) )[1] = ( ((double[]) (this5) )[1] - ((double[]) (p0) )[1] );
 					((double[]) (this7) )[2] = ( ((double[]) (this5) )[2] - ((double[]) (p0) )[2] );
 					double[] s = ((double[]) (this7) );
-					double[] this8 = this.r_d;
+					double[] this8 = this._gthis.d;
 					double[] this9 = new double[3];
 					double[] this10 = ((double[]) (this9) );
 					((double[]) (this10) )[0] = ( ((double[]) (this8) )[0] * -1.0 );
@@ -111,7 +108,7 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 						double u = ((double[]) (uvt) )[0];
 						double v = ((double[]) (uvt) )[1];
 						double t = ((double[]) (uvt) )[2];
-						if (( ( ( ( ( u < 0 ) || ( v < 0 ) ) || ( ( ( 1 - u ) - v ) < 0 ) ) || ( t < this.r_tmin ) ) || ( t > this.r_tmax ) )) 
+						if (( ( ( ( ( u < 0 ) || ( v < 0 ) ) || ( ( ( 1 - u ) - v ) < 0 ) ) || ( t < this._gthis.tmin ) ) || ( t > this._gthis.tmax ) )) 
 						{
 							h = null;
 						}
@@ -144,12 +141,12 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 		}
 		
 		apparentridges.BBox bb = node.left.bbox;
-		double tx1 = ( (( ((double[]) (bb.min) )[0] - ((double[]) (this.r_o) )[0] )) / ((double[]) (this.r_d) )[0] );
-		double tx2 = ( (( ((double[]) (bb.max) )[0] - ((double[]) (this.r_o) )[0] )) / ((double[]) (this.r_d) )[0] );
-		double ty1 = ( (( ((double[]) (bb.min) )[1] - ((double[]) (this.r_o) )[1] )) / ((double[]) (this.r_d) )[1] );
-		double ty2 = ( (( ((double[]) (bb.max) )[1] - ((double[]) (this.r_o) )[1] )) / ((double[]) (this.r_d) )[1] );
-		double tz1 = ( (( ((double[]) (bb.min) )[2] - ((double[]) (this.r_o) )[2] )) / ((double[]) (this.r_d) )[2] );
-		double tz2 = ( (( ((double[]) (bb.max) )[2] - ((double[]) (this.r_o) )[2] )) / ((double[]) (this.r_d) )[2] );
+		double tx1 = ( (( ((double[]) (bb.min) )[0] - ((double[]) (this._gthis.o) )[0] )) / ((double[]) (this._gthis.d) )[0] );
+		double tx2 = ( (( ((double[]) (bb.max) )[0] - ((double[]) (this._gthis.o) )[0] )) / ((double[]) (this._gthis.d) )[0] );
+		double ty1 = ( (( ((double[]) (bb.min) )[1] - ((double[]) (this._gthis.o) )[1] )) / ((double[]) (this._gthis.d) )[1] );
+		double ty2 = ( (( ((double[]) (bb.max) )[1] - ((double[]) (this._gthis.o) )[1] )) / ((double[]) (this._gthis.d) )[1] );
+		double tz1 = ( (( ((double[]) (bb.min) )[2] - ((double[]) (this._gthis.o) )[2] )) / ((double[]) (this._gthis.d) )[2] );
+		double tz2 = ( (( ((double[]) (bb.max) )[2] - ((double[]) (this._gthis.o) )[2] )) / ((double[]) (this._gthis.d) )[2] );
 		double t1 = java.lang.Math.max(java.lang.Math.max(java.lang.Math.min(tx1, tx2), java.lang.Math.min(ty1, ty2)), java.lang.Math.min(tz1, tz2));
 		double t2 = java.lang.Math.min(java.lang.Math.min(java.lang.Math.max(tx1, tx2), java.lang.Math.max(ty1, ty2)), java.lang.Math.max(tz1, tz2));
 		apparentridges.RayHit hitL = null;
@@ -159,7 +156,7 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 		}
 		else
 		{
-			if (( ( t1 > this.r_tmax ) || ( t2 < this.r_tmin ) )) 
+			if (( ( t1 > this._gthis.tmax ) || ( t2 < this._gthis.tmin ) )) 
 			{
 				hitL = null;
 			}
@@ -173,12 +170,12 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 		}
 		
 		apparentridges.BBox bb1 = node.right.bbox;
-		double tx11 = ( (( ((double[]) (bb1.min) )[0] - ((double[]) (this.r_o) )[0] )) / ((double[]) (this.r_d) )[0] );
-		double tx21 = ( (( ((double[]) (bb1.max) )[0] - ((double[]) (this.r_o) )[0] )) / ((double[]) (this.r_d) )[0] );
-		double ty11 = ( (( ((double[]) (bb1.min) )[1] - ((double[]) (this.r_o) )[1] )) / ((double[]) (this.r_d) )[1] );
-		double ty21 = ( (( ((double[]) (bb1.max) )[1] - ((double[]) (this.r_o) )[1] )) / ((double[]) (this.r_d) )[1] );
-		double tz11 = ( (( ((double[]) (bb1.min) )[2] - ((double[]) (this.r_o) )[2] )) / ((double[]) (this.r_d) )[2] );
-		double tz21 = ( (( ((double[]) (bb1.max) )[2] - ((double[]) (this.r_o) )[2] )) / ((double[]) (this.r_d) )[2] );
+		double tx11 = ( (( ((double[]) (bb1.min) )[0] - ((double[]) (this._gthis.o) )[0] )) / ((double[]) (this._gthis.d) )[0] );
+		double tx21 = ( (( ((double[]) (bb1.max) )[0] - ((double[]) (this._gthis.o) )[0] )) / ((double[]) (this._gthis.d) )[0] );
+		double ty11 = ( (( ((double[]) (bb1.min) )[1] - ((double[]) (this._gthis.o) )[1] )) / ((double[]) (this._gthis.d) )[1] );
+		double ty21 = ( (( ((double[]) (bb1.max) )[1] - ((double[]) (this._gthis.o) )[1] )) / ((double[]) (this._gthis.d) )[1] );
+		double tz11 = ( (( ((double[]) (bb1.min) )[2] - ((double[]) (this._gthis.o) )[2] )) / ((double[]) (this._gthis.d) )[2] );
+		double tz21 = ( (( ((double[]) (bb1.max) )[2] - ((double[]) (this._gthis.o) )[2] )) / ((double[]) (this._gthis.d) )[2] );
 		double t11 = java.lang.Math.max(java.lang.Math.max(java.lang.Math.min(tx11, tx21), java.lang.Math.min(ty11, ty21)), java.lang.Math.min(tz11, tz21));
 		double t21 = java.lang.Math.min(java.lang.Math.min(java.lang.Math.max(tx11, tx21), java.lang.Math.max(ty11, ty21)), java.lang.Math.max(tz11, tz21));
 		apparentridges.RayHit hitR = null;
@@ -188,7 +185,7 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 		}
 		else
 		{
-			if (( ( t11 > this.r_tmax ) || ( t21 < this.r_tmin ) )) 
+			if (( ( t11 > this._gthis.tmax ) || ( t21 < this._gthis.tmin ) )) 
 			{
 				hitR = null;
 			}
@@ -254,17 +251,11 @@ public class Mesh_visible_986__Fun extends haxe.lang.Function
 	}
 	
 	
-	public double r_tmin;
-	
-	public double r_tmax;
-	
-	public double[] r_o;
-	
-	public double[] r_d;
-	
 	public haxe.lang.Function[] hitNode;
 	
 	public apparentridges.BVHTree bvh;
+	
+	public apparentridges.Ray _gthis;
 	
 }
 

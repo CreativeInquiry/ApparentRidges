@@ -23,8 +23,14 @@ c: _
 	cd hl/c; gcc -O3 main.c -o out.o -I. -lhl -I/usr/local/Cellar/hashlink/1.11_1/libexec/include -L /usr/local/Cellar/hashlink/1.11_1/libexec/lib;
 	cd hl/c; ar rcs libapparentridges.a out.o
 
+c-example: _
+	cd hl/c; gcc -O3 example.c -I. -lhl -I/usr/local/Cellar/hashlink/1.11_1/libexec/include -L /usr/local/Cellar/hashlink/1.11_1/libexec/lib;
+
 cpp: _
 	haxe apparentridges/ApparentRidges.hx --cpp cpp/ApparentRidges/ -D static_link
+
+processing: java
+	cp java/ApparentRidges/ApparentRidges.jar processing/ApparentRidges/library/ApparentRidges.jar;
 
 cpp-example: _
 	cd cpp; g++ example.cpp -I/usr/local/lib/haxe/lib/hxcpp/4,1,15/include -I ./ApparentRidges/include --std=c++11 -L./ApparentRidges/ -loutput

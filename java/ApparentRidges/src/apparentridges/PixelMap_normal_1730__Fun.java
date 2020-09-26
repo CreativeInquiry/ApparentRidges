@@ -4,15 +4,12 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class PixelMap_lambertian_1775__Fun extends haxe.lang.Function
+public class PixelMap_normal_1730__Fun extends haxe.lang.Function
 {
-	public PixelMap_lambertian_1775__Fun(apparentridges.Render render, double[] min, double[] max, double[] light, double[] data)
+	public PixelMap_normal_1730__Fun(apparentridges.Render render, double[] data)
 	{
 		super(3, 0);
 		this.render = render;
-		this.min = min;
-		this.max = max;
-		this.light = light;
 		this.data = data;
 	}
 	
@@ -22,10 +19,12 @@ public class PixelMap_lambertian_1775__Fun extends haxe.lang.Function
 		int y = ( (( __fn_dyn3 == haxe.lang.Runtime.undefined )) ? (((int) (__fn_float3) )) : (((int) (haxe.lang.Runtime.toInt(__fn_dyn3)) )) );
 		int x = ( (( __fn_dyn2 == haxe.lang.Runtime.undefined )) ? (((int) (__fn_float2) )) : (((int) (haxe.lang.Runtime.toInt(__fn_dyn2)) )) );
 		apparentridges.RayHit h = ( (( __fn_dyn1 == haxe.lang.Runtime.undefined )) ? (((apparentridges.RayHit) (((java.lang.Object) (__fn_float1) )) )) : (((apparentridges.RayHit) (__fn_dyn1) )) );
-		int idx = ( ( y * this.render.width ) + x );
+		int idx = ( (( ( y * this.render.width ) + x )) * 3 );
 		if (( h == null )) 
 		{
-			((double[]) (this.data) )[idx] = java.lang.Double.NEGATIVE_INFINITY;
+			((double[]) (this.data) )[idx] = ((double) (0) );
+			((double[]) (this.data) )[( idx + 1 )] = ((double) (0) );
+			((double[]) (this.data) )[( idx + 2 )] = ((double) (0) );
 		}
 		else
 		{
@@ -66,10 +65,9 @@ public class PixelMap_lambertian_1775__Fun extends haxe.lang.Function
 			((double[]) (this12) )[1] = ( ((double[]) (this8) )[1] + ((double[]) (rhs4) )[1] );
 			((double[]) (this12) )[2] = ( ((double[]) (this8) )[2] + ((double[]) (rhs4) )[2] );
 			double[] n = ((double[]) (this12) );
-			double ndotl = ( ( ( ((double[]) (n) )[0] * ((double[]) (this.light) )[0] ) + ( ((double[]) (n) )[1] * ((double[]) (this.light) )[1] ) ) + ( ((double[]) (n) )[2] * ((double[]) (this.light) )[2] ) );
-			this.min[0] = java.lang.Math.min(this.min[0], ndotl);
-			this.max[0] = java.lang.Math.max(this.max[0], ndotl);
-			((double[]) (this.data) )[idx] = ndotl;
+			((double[]) (this.data) )[idx] = ((double[]) (n) )[0];
+			((double[]) (this.data) )[( idx + 1 )] = ((double[]) (n) )[1];
+			((double[]) (this.data) )[( idx + 2 )] = ((double[]) (n) )[2];
 		}
 		
 		return null;
@@ -77,12 +75,6 @@ public class PixelMap_lambertian_1775__Fun extends haxe.lang.Function
 	
 	
 	public apparentridges.Render render;
-	
-	public double[] min;
-	
-	public double[] max;
-	
-	public double[] light;
 	
 	public double[] data;
 	

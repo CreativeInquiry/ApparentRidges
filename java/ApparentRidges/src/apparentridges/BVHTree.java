@@ -41,9 +41,9 @@ public class BVHTree extends haxe.lang.HxObject
 	public void build()
 	{
 		apparentridges.BVHTree _gthis = this;
-		haxe.lang.Function bboxAddFace = new apparentridges.BVHTree_build_1186__Fun(_gthis);
+		haxe.lang.Function bboxAddFace = new apparentridges.BVHTree_build_1194__Fun(_gthis);
 		haxe.lang.Function[] buildRange = new haxe.lang.Function[]{null};
-		buildRange[0] = new apparentridges.BVHTree_build_1191__Fun(buildRange, bboxAddFace, _gthis);
+		buildRange[0] = new apparentridges.BVHTree_build_1199__Fun(buildRange, bboxAddFace, _gthis);
 		this.root = ((apparentridges.BVHNode) (buildRange[0].__hx_invoke2_o(((double) (0) ), haxe.lang.Runtime.undefined, ((double) (this.faces.length) ), haxe.lang.Runtime.undefined)) );
 	}
 	

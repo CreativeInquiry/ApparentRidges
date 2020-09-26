@@ -4,15 +4,15 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class Mesh_computeFeatureSize_446__Fun extends haxe.lang.Function
+public class Mesh_computeFeatureSize_454__Fun extends haxe.lang.Function
 {
-	public Mesh_computeFeatureSize_446__Fun()
+	public Mesh_computeFeatureSize_454__Fun()
 	{
 		super(2, 1);
 	}
 	
 	
-	public static apparentridges.Mesh_computeFeatureSize_446__Fun __hx_current;
+	public static apparentridges.Mesh_computeFeatureSize_454__Fun __hx_current;
 	
 	@Override public double __hx_invoke2_f(double __fn_float1, java.lang.Object __fn_dyn1, double __fn_float2, java.lang.Object __fn_dyn2)
 	{
