@@ -1,0 +1,168 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+
+<style>
+  h1, h3{
+    font-family: 'Raleway', sans-serif;
+  }
+  body{
+    font-family: monospace;
+  }
+</style>
+<body>
+  <h1>Apparent Ridges JS Demo</h1>
+  <h3>Render line drawings of 3D meshes. <a href="https://github.com/CreativeInquiry/ApparentRidges">[Github Repo]</a></h3>
+  <p>Tweak settings in the GUI panel and click <span onclick="doit()">GENERATE →</span></p>
+  <div id="output"></div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+
+<script src="js/apparentridges.js"></script>
+<script>
+const MODEL_PATHS = {
+  armadillo:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Farmadillo_300K.obj?v=1601077748489",
+  buddha:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fbuddha_100K.obj?v=1601077751122",
+  bunny:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fbunny_70K.obj?v=1601077748424",
+  dragon:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fdragon_100K.obj?v=1601077751925",
+  lucy:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Flucy_500K.obj?v=1601077756116",
+  nefertiti:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fnefertiti_100K.obj?v=1601077748600",
+  ogre:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fogre_40K.obj?v=1601077748980",  
+  planck:"https://cdn.glitch.com/4c1e3290-9021-4225-bce9-a7df311fcec1%2Fplanck_100K.obj?v=1601077749531",
+}
+const MODEL_ROTS = {
+  armadillo:[0,0,0],
+  buddha:[0,180,0],
+  bunny:[0,0,0],
+  dragon:[0,0,0],
+  lucy:[-90,0,0],
+  nefertiti:[-90,180,0],
+  ogre:[0,180,0],
+  planck:[-90,0,0],
+}
+
+const AR = apparentridges;
+
+const CONFIG = {
+  thresh:0.1,
+  rotateX:0,
+  rotateY:0,
+  rotateZ:0,
+  focal:1.25,
+  distance:1.5,
+  width:800,
+  height:800,
+  hiddenLines:false,
+  gradations:true,
+};
+
+function fetchTextSync(theUrl){
+  let xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET",theUrl,false);
+  xmlHttp.send(null);
+  return xmlHttp.responseText;
+}
+
+var LAST_MODEL = "none";
+var CURR_MODEL = "nefertiti";
+let mesh;
+
+function doit(){
+  let render;
+  let objstr;
+  let rstr;
+  let div = document.getElementById("output");
+  div.innerHTML = "";
+  let logger = function(x){
+    console.log(x);
+    div.innerHTML += x+"<br>";
+  }
+
+  let steps = [
+    ()=>logger("downloading obj..."),
+    ()=>{
+      if (LAST_MODEL != CURR_MODEL){
+        objstr = fetchTextSync(MODEL_PATHS[CURR_MODEL]);
+      }
+    },
+    ()=>logger("parsing obj to mesh..."),
+    ()=>{
+      mesh = AR.OBJParser.fromString(objstr);
+    },
+    ()=>logger("transforming mesh..."),
+    ()=>{
+      render = new AR.Render(mesh,CONFIG.width,CONFIG.height);
+      let rot = MODEL_ROTS[CURR_MODEL];
+      render.transform(AR.Util.matRotx(rot[0]*Math.PI/180));
+      render.transform(AR.Util.matRoty(rot[1]*Math.PI/180));
+      render.transform(AR.Util.matRotz(rot[2]*Math.PI/180));
+
+      render.transform(AR.Util.matRotx(CONFIG.rotateX*Math.PI/180));
+      render.transform(AR.Util.matRoty(CONFIG.rotateY*Math.PI/180));
+      render.transform(AR.Util.matRotz(CONFIG.rotateZ*Math.PI/180));
+      render.autoPlace(CONFIG.distance,CONFIG.focal);
+    },
+    ()=>logger("(slowly) computing curvature and bounding volume hierarchy..."),//\n(this can take a while, turn on `hiddenLines` to expedite)"),
+    ()=>{
+      mesh.precompute(!CONFIG.hiddenLines,true);
+      render.didPrecompute = true;
+    },
+    ()=>logger("computing apparent ridges..."),
+    ()=>{
+      if (CONFIG.hiddenLines){
+        render.apparentRidges(CONFIG.thresh,-1);
+      }else{
+        render.apparentRidges(CONFIG.thresh);
+      }
+    },
+    ()=>logger("building polylines..."),
+    ()=>{
+      render.buildPolylines();
+    },
+    ()=>logger("writing svg..."),
+    ()=>{
+      rstr = AR.SVGWriter[CONFIG.gradations?"gradients":"polylines"](render);
+    },
+    ()=>{
+      document.getElementById("output").innerHTML = rstr;
+    }
+  ];
+  function dostep(i){
+    if (i == steps.length){
+      return;
+    }
+    steps[i]();
+    setTimeout(function(){dostep(i+1)},10);
+  }
+  dostep(0);
+  
+}
+
+document.getElementById("output").innerHTML = fetchTextSync("samples/nefertiti-0.1.svg");
+
+var MODEL_NAMES = Object.keys(MODEL_PATHS);
+const gui = new dat.GUI();
+gui.add(window,"CURR_MODEL",MODEL_NAMES).name("mesh");
+gui.add(CONFIG,'thresh',0,1);
+gui.add(CONFIG,'rotateX',-360,360);
+gui.add(CONFIG,'rotateY',-360,360);
+gui.add(CONFIG,'rotateZ',-360,360);
+gui.add(CONFIG,'distance',1,5);
+gui.add(CONFIG,'focal',1,5);
+gui.add(CONFIG,'width',100,2000);
+gui.add(CONFIG,'height',100,2000);
+gui.add(CONFIG,'hiddenLines');
+gui.add(CONFIG,'gradations');
+gui.add({"GENERATE":doit},"GENERATE")
+gui.add({"DOWNLOAD":function(){
+  var element = document.createElement('a');
+  var filename="output.svg";
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById("output").innerHTML));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}},"DOWNLOAD")
+
+gui.domElement.style.filter="saturate(0%) invert(200%)";
+</script>
