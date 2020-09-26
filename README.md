@@ -9,7 +9,7 @@ ApparentRidges contains an implementation of the paper [Apparent Ridges for Lin
 
 Written in Haxe and transcompiled for your favourite programming language. Many parts of it are based on the awesome [RTSC](https://rtsc.cs.princeton.edu) viewer, which contains a C++ version of the Apparent Ridges algorithm.
 
-#### Check out the [API documentation](), or an [Online Demo]().
+#### Check out the [API documentation](), or an [Online Demo](https://creativeinquiry.github.io/ApparentRidges).
 
 
 ## Overview
@@ -32,28 +32,30 @@ See **Programming API** and **Commandline API** sections for details.
 
 ## Navigation
 
+More Detail about the items might be found in each folder README.
+
 ### Source
 
-- Haxe source code in `apparentridges/ApparentRidges.hx`
-- CLI source code
+- Haxe source code in [`apparentridges/ApparentRidges.hx`](./apparentridges/ApparentRidges.hx)
+- [CLI source code](./Cli.hx)
 
 
 ### Distribution
 
-- JavaScript version of the library
-- JavaScript interactive demo
-- Generate the demo meshes with JavaScript
-- Java version of the library
-- A .jar file for grabbing
+- [JavaScript version of the library](./js/apparentridges.js)
+- [JavaScript interactive demo](https://creativeinquiry.github.io/ApparentRidges)
+- [Render the sample meshes with JavaScript](./js/generatesamples.js)
+- [Java version of the library](./java/ApparentRidges)
+- [A .jar file for grabbing](./java/ApparentRidges.jar)
 - Processing example
-- Python version of the library
-- Python commandline interface
-- Python example
-- Lua version of the library
-- Lua example
-- C++ version of the library
-- C++ commandline interface
-- OpenFrameworks example
+- [Python version of the library](./py/apparentridges.py)
+- [Python commandline interface](./py/cli.py)
+- [Python example](./py/example.py)
+- [Lua version of the library](./lua/apparentridges.lua)
+- [Lua example](./lua/example.lua)
+- [C++ version of the library](./cpp/ApparentRidges)
+- [C++ commandline interface](./cpp/cli)
+- [OpenFrameworks example](./cpp/openframeworks/ApparentRidgesExample)
 
 ### Samples
 
