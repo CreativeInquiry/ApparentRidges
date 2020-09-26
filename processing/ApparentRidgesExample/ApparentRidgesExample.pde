@@ -1,7 +1,7 @@
 // Processing Example for ApparentRidges, the 3D edge detection toolkit
 // INSTRUCTIONS
 
-// A pre-built Processing library can be found at processing/ApparentRdiges
+// A pre-built Processing library can be found at processing/ApparentRidges
 // just place it in your Processing libraries folder.
 // for example,
 // cp -r processing/ApparentRidges ~/Documents/Processing/libraries
