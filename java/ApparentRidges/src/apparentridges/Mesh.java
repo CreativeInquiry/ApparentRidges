@@ -306,43 +306,43 @@ public class Mesh extends haxe.lang.HxObject
 		boolean doBVH1 = ( (haxe.lang.Runtime.eq(doBVH, null)) ? (true) : (haxe.lang.Runtime.toBool(((java.lang.Boolean) (doBVH) ))) );
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing normals...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (345) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing normals...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (611) )) )}));
 		}
 		
 		this.computeNormals();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing point areas...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (347) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing point areas...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (613) )) )}));
 		}
 		
 		this.computePointAreas();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing adjacent faces...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (349) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing adjacent faces...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (615) )) )}));
 		}
 		
 		this.computeAdjacentFaces();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing curvatures...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (351) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing curvatures...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (617) )) )}));
 		}
 		
 		this.computeCurvatures();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing bounding sphere...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (353) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing bounding sphere...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (619) )) )}));
 		}
 		
 		this.computeBSphere();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing feature size...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (355) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing feature size...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (621) )) )}));
 		}
 		
 		this.computeFeatureSize();
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "computing bounding volume hierarchy...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (357) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "computing bounding volume hierarchy...", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (623) )) )}));
 		}
 		
 		if (doBVH1) 
@@ -356,7 +356,7 @@ public class Mesh extends haxe.lang.HxObject
 		
 		if (verb1) 
 		{
-			haxe.Log.trace.__hx_invoke2_o(0.0, "pre-computation finished.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (359) )) )}));
+			haxe.Log.trace.__hx_invoke2_o(0.0, "pre-computation finished.", 0.0, new haxe.lang.DynamicObject(new java.lang.String[]{"className", "fileName", "methodName"}, new java.lang.Object[]{"apparentridges.Mesh", "apparentridges/ApparentRidges.hx", "precompute"}, new java.lang.String[]{"lineNumber"}, new double[]{((double) (((double) (625) )) )}));
 		}
 		
 	}
@@ -477,7 +477,7 @@ public class Mesh extends haxe.lang.HxObject
 	{
 		this.bsphere = new apparentridges.BSphere();
 		apparentridges.Mesh _gthis = this;
-		haxe.lang.Function farthestVertexAlong = new apparentridges.Mesh_computeBSphere_383__Fun(_gthis);
+		haxe.lang.Function farthestVertexAlong = new apparentridges.Mesh_computeBSphere_659__Fun(_gthis);
 		double[] this1 = new double[3];
 		double[] this2 = ((double[]) (this1) );
 		((double[]) (this2) )[0] = ((double) (0) );
@@ -654,7 +654,7 @@ public class Mesh extends haxe.lang.HxObject
 		double mult = 0.01;
 		double max_feat_size = ( 0.05 * this.bsphere.r );
 		int which = ((int) (( frac * samples.length )) );
-		samples.sort(( (( apparentridges.Mesh_computeFeatureSize_454__Fun.__hx_current != null )) ? (apparentridges.Mesh_computeFeatureSize_454__Fun.__hx_current) : (apparentridges.Mesh_computeFeatureSize_454__Fun.__hx_current = ((apparentridges.Mesh_computeFeatureSize_454__Fun) (new apparentridges.Mesh_computeFeatureSize_454__Fun()) )) ));
+		samples.sort(( (( apparentridges.Mesh_computeFeatureSize_732__Fun.__hx_current != null )) ? (apparentridges.Mesh_computeFeatureSize_732__Fun.__hx_current) : (apparentridges.Mesh_computeFeatureSize_732__Fun.__hx_current = ((apparentridges.Mesh_computeFeatureSize_732__Fun) (new apparentridges.Mesh_computeFeatureSize_732__Fun()) )) ));
 		this.featureSize = java.lang.Math.min(( mult / ((double) (haxe.lang.Runtime.toDouble(samples.__get(which))) ) ), max_feat_size);
 	}
 	
@@ -1863,7 +1863,7 @@ public class Mesh extends haxe.lang.HxObject
 		r_tmax = ( java.lang.Math.sqrt(( ( ( ((double[]) (x) )[0] * ((double[]) (x) )[0] ) + ( ((double[]) (x) )[1] * ((double[]) (x) )[1] ) ) + ( ((double[]) (x) )[2] * ((double[]) (x) )[2] ) )) - epsilon );
 		apparentridges.BVHTree bvh = this.bvh;
 		haxe.lang.Function[] hitNode = new haxe.lang.Function[]{null};
-		hitNode[0] = new apparentridges.Mesh_visible_994__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
+		hitNode[0] = new apparentridges.Mesh_visible_1328__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
 		apparentridges.RayHit h = ((apparentridges.RayHit) (hitNode[0].__hx_invoke1_o(0.0, bvh.root)) );
 		return ( h == null );
 	}

@@ -3,53 +3,84 @@
  *
  * -- Render line drawings of 3D meshes.
  *
- * Main Algorithm based on RTSC (C++): https://rtsc.cs.princeton.edu
- * Apparent Ridges Paper: http://people.csail.mit.edu/tjudd/apparentLines.pdf
+ * Main Algorithm based on RTSC (C++): 
+ *   https://rtsc.cs.princeton.edu
+ * Some mesh operations based on Trimesh2 (C++): 
+ *   https://gfx.cs.princeton.edu/proj/trimesh2/
+ * The original Apparent Ridges Paper: 
+ *   http://people.csail.mit.edu/tjudd/apparentLines.pdf
  *
- * This haxe port by:
- * Lingdong Huang 2020, License: GPL v2
+ * This haxe implementation by:
+ * Lingdong Huang, 2020, License: GPL v2
  * Made for STUDIO for Creative Inquiry at CMU
  *
  * haxe --version
  * 4.1.3
  * See Makefile for build instructions
  ***************************************************/
-
 package apparentridges;
 
 import haxe.ds.Vector;
 
+/**
+  Collection of static utilities
+**/
 @:expose
 class Util {
+  /**
+    Round float to integer
+    @param x the float to be rounded
+    @return closest integer
+  **/
   public static inline function rndInt(x : Float) : Int{
     return Std.int(Math.round(x));
   }
+  /**
+    MIN() for integers
+    @param a first integer
+    @param b second integer
+    @return the lesser of the inputs
+  **/
   public static inline function min(a:Int, b:Int) : Int{
     return (a>b)?b:a;
   }
-
+  /**
+    Square a float (x^2)
+    @param x the float
+    @return the square
+  **/
   public static inline function sq(x : Float) : Float{
     return x * x;
   }
-  // i + 1 and i - 1 modulo 3
-  // This way of computing it tends to be faster than using %
+  /**
+    i + 1 modulo 3.
+    "This way of computing it tends to be faster than using %" -- Trimesh2
+  **/
   public static inline function nextMod3(i : Int) : Int{
     return ((i) < 2 ? (i) + 1 : (i) - 2);
   }
+  /**
+    i - 1 modulo 3.
+    "This way of computing it tends to be faster than using %" -- Trimesh2
+  **/
   public static inline function prevMod3(i : Int) : Int{
     return ((i) > 0 ? (i) - 1 : (i) + 2);
   }
-  // Area-weighted triangle face normal
+  /**
+    "Area-weighted triangle face normal" -- RTSC
+  **/ 
   public static inline function trinorm(v0 : Vec3, v1 : Vec3, v2 : Vec3) : Vec3{
     return Vec3.cross((v1 - v0), (v2 - v0)) * 0.5;
   }
 
-  // LDL^T decomposition of a symmetric positive definite matrix (and some
-  // other symmetric matrices, but fragile since we don't do pivoting).
-  // Like Cholesky, but no square roots, which is important for small N.
-  // Reads diagonal and upper triangle of matrix A.
-  // On output, lower triangle of A holds LD, while rdiag holds D^-1.
-  // Algorithm from Golub and van Loan.
+  /**
+    "LDL^T decomposition of a symmetric positive definite matrix (and some
+    other symmetric matrices, but fragile since we don't do pivoting).
+    Like Cholesky, but no square roots, which is important for small N.
+    Reads diagonal and upper triangle of matrix A.
+    On output, lower triangle of A holds LD, while rdiag holds D^-1.
+    Algorithm from Golub and van Loan." -- Trimesh2
+  **/ 
   public static function ldltdc(A : Array<Array<Float>>, rdiag : Array<Float>) : Bool{
     // Special case for small N
     var N : Int = rdiag.length;
@@ -92,7 +123,9 @@ class Util {
 
     return true;
   }
-  // Solve Ax=b after ldltdc.  x is allowed to be the same as b.
+  /**
+    "Solve Ax=b after ldltdc.  x is allowed to be the same as b." -- Trimesh
+  **/ 
   public static function ldltsl(A : Array<Array<Float>>, 
                                 rdiag : Array<Float>,
                                 b : Array<Float>,
@@ -113,10 +146,12 @@ class Util {
     }
   }
 
-  // Compute largest eigenvalue and associated eigenvector of a
-  // symmetric 2x2 matrix.  Solves characteristic equation.
-  // Inputs: three elements of matrix (upper-left, diag, lower-right)
-  // Outputs: largest (in magnitude) eigenvector/value
+  /**
+    "Compute largest eigenvalue and associated eigenvector of a
+    symmetric 2x2 matrix.  Solves characteristic equation.
+    Inputs: three elements of matrix (upper-left, diag, lower-right)
+    Outputs: largest (in magnitude) eigenvector/value" -- Trimesh2
+  **/ 
   public static function largestEig2x2(m1:Float,m12:Float,m2:Float) : Vec3{
     var l1 : Float = 0.5 * (m1+m2);
     
@@ -133,13 +168,51 @@ class Util {
     e1.z = l1;
     return e1;
   }
-
+  /**
+    Returns a 4x4 identiy matrix (row-major, flat)
+    @return the identity matrix
+  **/
   public static inline function matIden() : Array<Float> {return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];}
+  /**
+    Returns a 4x4 matrix for rotating around x axis (row-major, flat)
+    @param a the angle in radians
+    @return the rotation matrix
+  **/
   public static inline function matRotx(a:Float): Array<Float> {return [1,0,0,0, 0,Math.cos(a),-Math.sin(a),0, 0,Math.sin(a),Math.cos(a),0, 0,0,0,1];}
+  /**
+    Returns a 4x4 matrix for rotating around y axis (row-major, flat)
+    @param a the angle in radians
+    @return the rotation matrix
+  **/
   public static inline function matRoty(a:Float): Array<Float> {return [Math.cos(a),0,Math.sin(a),0, 0,1,0,0, -Math.sin(a),0,Math.cos(a),0, 0,0,0,1];}
+  /**
+    Returns a 4x4 matrix for rotating around z axis (row-major, flat)
+    @param a the angle in radians
+    @return the rotation matrix
+  **/
   public static inline function matRotz(a:Float): Array<Float> {return [Math.cos(a),-Math.sin(a),0,0, Math.sin(a),Math.cos(a),0,0, 0,0,1,0, 0,0,0,1];}
+  /**
+    Returns a 4x4 translation matrix (row-major, flat)
+    @param x translation along x axis
+    @param y translation along x axis
+    @param z translation along x axis
+    @return the translation matrix
+  **/
   public static inline function matTrsl(x:Float,y:Float,z:Float) : Array<Float> {return [1,0,0,x, 0,1,0,y, 0,0,1,z, 0,0,0,1];}
+  /**
+    Returns a 4x4 scaling matrix (row-major, flattend)
+    @param x scale along x axis
+    @param y scale along x axis
+    @param z scale along x axis
+    @return the scaling matrix
+  **/
   public static inline function matScal(x:Float,y:Float,z:Float) : Array<Float> {return [x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1];}
+  /**
+    Multiply two 4x4 matrices (row-major, flat)
+    @param A first matrix
+    @param B second matrix
+    @return the matrix product
+  **/
   public static inline function matMult(A:Array<Float>,B:Array<Float>) : Array<Float> {
     return [A[0]*B[0]+A[1]*B[4]+A[2]*B[8]+A[3]*B[12],A[0]*B[1]+A[1]*B[5]+A[2]*B[9]+A[3]*B[13],A[0]*B[2]+A[1]*B[6]+A[2]*B[10]+A[3]*B[14],
       A[0]*B[3]+A[1]*B[7]+A[2]*B[11]+A[3]*B[15],A[4]*B[0]+A[5]*B[4]+A[6]*B[8]+A[7]*B[12],A[4]*B[1]+A[5]*B[5]+A[6]*B[9]+A[7]*B[13],
@@ -148,12 +221,27 @@ class Util {
       A[12]*B[0]+A[13]*B[4]+A[14]*B[8]+A[15]*B[12],A[12]*B[1]+A[13]*B[5]+A[14]*B[9]+A[15]*B[13],A[12]*B[2]+A[13]*B[6]+A[14]*B[10]+A[15]*B[14],
       A[12]*B[3]+A[13]*B[7]+A[14]*B[11]+A[15]*B[15]];
   }
+  /**
+    Transform a 3D vector using a 4x4 matrix (row-major, flat)
+    @param A the transformation matrix
+    @param v the vector
+    @return new vector after transformation
+  **/
   public static inline function matTrfm(A:Array<Float>,v:Vec3) : Vec3 {
     return new Vec3((A[0]*v[0]+A[1]*v[1]+A[2]*v[2]+A[3])/(A[12]*v[0]+A[13]*v[1]+A[14]*v[2]+A[15]),
       (A[4]*v[0]+A[5]*v[1]+A[6]*v[2]+A[7])/(A[12]*v[0]+A[13]*v[1]+A[14]*v[2]+A[15]),(A[8]*v[0]+A[9]*v[1]+A[10]*v[2]+A[11])/(A[12]*v[0]+A[13]*v[1]+A[14]*v[2]+A[15])
     );}
+  /**
+    Project a 3D point onto 2D plane with pinhole camera model situated at `(0,0,0)` pointing toward `+z`
+    @param f focal length
+    @param v the vector
+    @return a 2D point (with zeroed z component)
+  **/
   public static inline function matProj(f:Float,v:Vec3) : Vec3 {return new Vec3(f*v[0]/v[2],f*v[1]/v[2],0);}
-  
+  /**
+    Uniform random sampler on unit hemisphere (`+z`)
+    @return a random point that lies on the hemisphere
+  **/
   public static inline function uniformHemisphereSampler () : Vec3{
     var Xi1 : Float = Math.random();
     var Xi2 : Float = Math.random();
@@ -167,18 +255,37 @@ class Util {
   }
 
 #if sys
+  /**
+    Save a string to a file on disk
+    @param filename path to the file
+    @param content content to be written
+  **/
   public static function writeFile(filename : String, content : String){
     sys.io.File.saveContent(filename,content);
   }
 #end
 }
 
+/**
+  An abstract 3D Vector type that maps to native fixed-length array in target language,
+  with all methods inlined
+**/
 @:expose
 abstract Vec3 (haxe.ds.Vector<Float>) {
+
+  /** x component, also accessable via subscript `[0]` **/ 
   public var x(get, set):Float;
+  /** y component, also accessable via subscript `[1]`  **/ 
   public var y(get, set):Float;
+  /** z component, also accessable via subscript `[2]`  **/ 
   public var z(get, set):Float;
 
+  /**
+    create new vector from `x` `y` `z` components
+    @param _x x component
+    @param _y y component
+    @param _z z component
+  **/
   public inline function new(_x:Float,_y:Float,_z:Float){
     this = new haxe.ds.Vector<Float>(3);
     this[0] = _x;
@@ -192,13 +299,26 @@ abstract Vec3 (haxe.ds.Vector<Float>) {
   private inline function set_y(v:Float):Float {  return this[1]=v; }
   private inline function set_z(v:Float):Float {  return this[2]=v; }
 
+  /**
+    Duplicate a vector
+    @return a new vector that equals to this vector
+  **/
   public inline function copy() : Vec3{
     return new Vec3(x,y,z);
   }
+  /**
+    Set `x` `y` `z` components of this vector from another vector
+    @param v the vector to copy from
+  **/
   public inline function assign(v : Vec3){
     x = v.x; y = v.y; z = v.z;
   }
-
+  /**
+    Compute the cross product of two vectors
+    @param v1 the first vector
+    @param v2 the second vector
+    @return the cross product
+  **/
   public static inline function cross(v1:Vec3, v2:Vec3) : Vec3 {
     return new Vec3(
       v1.y*v2.z-v1.z*v2.y,
@@ -206,23 +326,50 @@ abstract Vec3 (haxe.ds.Vector<Float>) {
       v1.x*v2.y-v1.y*v2.x
     );
   }
+  /**
+    Compute the dot product of two vectors
+    @param v1 the first vector
+    @param v2 the second vector
+    @return the dot product
+  **/
   public static inline function dot(v1:Vec3, v2:Vec3) : Float {
     return v1.x*v2.x+v1.y*v2.y+v1.z*v2.z;
   }
+  /**
+    Compute the square of the (Euclidean) distance between two vectors
+    @param v1 the first vector
+    @param v2 the second vector
+    @return distance^2
+  **/
   public static inline function dist2(v1:Vec3, v2:Vec3) : Float{
     return Util.sq(v1.x-v2.x)+Util.sq(v1.y-v2.y)+Util.sq(v1.z-v2.z);
   }
+  /**
+    Compute the (Euclidean) distance between two vectors
+    @param v1 the first vector
+    @param v2 the second vector
+    @return the distance
+  **/
   public static inline function dist(v1:Vec3,v2:Vec3):Float{
     return Math.sqrt(Vec3.dist2(v1,v2));
   }
-
+  /**
+    Compute the length (magnitude, l2-norm) of the vector
+    @return the length
+  **/
   public inline function len():Float {
     return Math.sqrt(x*x+y*y+z*z);
   }
+  /**
+    Compute the square of the length of the vector
+    @return length^2
+  **/
   public inline function len2():Float{
     return x*x+y*y+z*z;
   }
-
+  /**
+    Normalize the vector to unit vector in-place
+  **/
   public inline function normalize(){
     var l : Float = len();
     if (l > 0){
@@ -236,58 +383,112 @@ abstract Vec3 (haxe.ds.Vector<Float>) {
       z = 1;
     }
   }
+  /**
+    Scale the vector in place
+    @param s the scaling factor
+  **/
   public inline function scale(s:Float){
     x *= s;
     y *= s;
     z *= s;
   }
-
+  /**
+    Get vector `x`/`y`/`z` component via subscript operator `[0]` `[1]` `[2]`
+    @param i the index
+  **/
   @:arrayAccess
-  public inline function get(i:Int) {
+  public inline function get(i:Int):Float {
     return this[i];
   }
+  /**
+    Set vector `x`/`y`/`z` component via subscript operator `[0]` `[1]` `[2]`
+    @param i the index
+    @param v the value to write
+  **/
   @:arrayAccess
   public inline function set(i:Int,v:Float):Float {
     this[i] = v;
     return v;
   }
-
+  /**
+    Overload `+` operator to add vectors
+    @param rhs the other vector
+    @return elementwise sum
+  **/
   @:op(A+B)
   public inline function add(rhs:Vec3) : Vec3 {
     return new Vec3(x+rhs.x,y+rhs.y,z+rhs.z);
   }
+  /**
+    Overload `-` operator to subtract vectors
+    @param rhs the other vector
+    @return elementwise difference
+  **/
   @:op(A-B)
   public inline function sub(rhs:Vec3) : Vec3 {
     return new Vec3(x-rhs.x,y-rhs.y,z-rhs.z);
   }
+  /**
+    Overload `*` operator to multiply vectors elementwise
+    @param rhs the other vector
+    @return hadamard product
+  **/
   @:op(A*B)
   public inline function mul(rhs:Vec3) : Vec3 {
     return new Vec3(x*rhs.x,y*rhs.y,z*rhs.z);
   }
+  /**
+    Overload `*` operator to multiply vector by a scalar
+    @param rhs the scalar
+    @return scaled vector
+  **/
   @:op(A*B)
   public inline function mulf(rhs:Float) : Vec3 {
     return new Vec3(x*rhs,y*rhs,z*rhs);
   }
 
 }
-
+/**
+  Triangular mesh face type, storing vertices as indices. 
+  Maps to native fixed-length array in target language
+**/
 @:expose
 abstract Face (haxe.ds.Vector<Int>) {
+  /**
+    New face from vertices (vertex indices in the mesh)
+    @param a index of first  vertex in the mesh
+    @param b index of second vertex in the mesh
+    @param c index of third  vertex in the mesh
+  **/
   public inline function new(a:Int, b:Int, c:Int){
     this = new haxe.ds.Vector<Int>(3);
     this[0]=a;
     this[1]=b;
     this[2]=c;
   }
+  /**
+    Get vertex in the face via subscript `[0]` `[1]` `[2]`
+    @param i the index
+  **/
   @:arrayAccess
-  public inline function get(i:Int) {
+  public inline function get(i:Int):Int {
     return this[i];
   }
+  /**
+    Set vertex in the face via subscript `[0]` `[1]` `[2]`
+    @param i the index
+    @param v the value
+  **/
   @:arrayAccess
   public inline function set(i:Int,v:Int):Int {
     this[i] = v;
     return v;
   }
+  /**
+    Search for a vertex in the face
+    @param v the vertex to look for (vertex index in the mesh)
+    @return index of the vertex in the face, -1 if not found
+  **/
   public inline function indexOf(v:Int):Int{
     if (this[0]==v){return 0;}
     if (this[1]==v){return 1;}
@@ -296,51 +497,115 @@ abstract Face (haxe.ds.Vector<Int>) {
   }
 }
 
+/**
+  Type for storing an apparent ridge, 
+  containing coordinates of endpoints and cooresponding ridge strengths
+**/
 @:expose
 class Ridge {
+  /** first endpoint **/
   public var A : Vec3;
+  /** second endpoint **/
   public var B : Vec3;
+  /** ridge strength at first endpoint **/
   public var strengthA : Float;
+  /** ridge strength at second endpoint **/
   public var strengthB : Float;
-  public function new(a:Vec3,sa:Float,b:Vec3,sb:Float){
+  /** 
+    new ridge from endpoints and strengths 
+    @param a  first endpoint coordinate
+    @param sa strength of first endpoint
+    @param b  second endpoint coordiate
+    @param sb strength of second endpoint
+  **/
+  public inline function new(a:Vec3,sa:Float,b:Vec3,sb:Float){
     A = a; strengthA = sa;
     B = b; strengthB = sb;
   }
 }
 
+/**
+  Bounding sphere type
+**/
 @:expose
 class BSphere{
+  /** radius of the bounding sphere **/
   public var r : Float;
+  /** center of the bounding sphere **/
   public var o : Vec3;
-  public function new(){}
+  /** new uninitialized bounding sphere **/
+  public inline function new(){}
 }
 
+/**
+  The main mesh type, stored as vertices and triangles.
+  Contains methods to compute normals, curvatures,
+  apparent ridges, etc.
+**/
 @:expose
 class Mesh {
+  /** vertices as array of 3D points **/
   public var vertices : Array<Vec3> = [];
+  /** faces as array of triangles **/
   public var faces : Array<Face> = [];
+  /** vertex normals as array of vectors **/
   public var normals : Array<Vec3> = [];
+  /** curvature on the first principle direction, per-vertex**/
   public var curv1 : Array<Float> = [];
+  /** curvature on the second principle direction, pre-vertex**/
   public var curv2 : Array<Float> = [];
+  /** first principle curvature direction, per-vertex**/
   public var pdir1 : Array<Vec3> = [];
+  /** second principle curvature direction, per-vertex**/
   public var pdir2 : Array<Vec3> = [];
+  /** point area of each vertex **/
   public var pointAreas : Array<Float> = [];
+  /** corner area of each vertex **/
   public var cornerAreas : Array<Vec3> = [];
+  /** neighboring faces for each vertex **/
   public var adjacentFaces : Array<Array<Int>> = [];
 
+  /** cosine of angle between normal and view direction **/
   public var ndotv : Array<Float> = [];
+
+  /** 
+    `t1` and `q1` as defined in the paper, 
+    packed into single Vec3 for each vertex
+  **/
   public var t1q1 : Array<Vec3> = [];
+
+  /** 
+    "`D_{t_1} q_1` - the derivative of max view-dependent curvature
+    in the principal max view-dependent curvature direction." -- RTSC
+  **/
   public var Dt1q1 : Array<Float> = [];
 
+  /** bounding sphere of the mesh **/
   public var bsphere : BSphere;
+
+  /** "Used to make thresholds dimensionless" -- RTSC **/
   public var featureSize : Float;
 
+  /** bounding volume hierarchy **/
   public var bvh : BVHTree;
 
+  /**
+    New empty mesh
+  **/
   public function new(){
-
   }
-
+  /**
+    Call necessary pre-computations of mesh properties for computing 
+    apparent ridges, in this order:
+    normals, point-areas, adjacent-faces, curvatures, bounding sphere,
+    feature size, bounding volume hierarchy.
+    Alternatively, you can call the `computeXxxxx()` methods directly for
+    a more customized set of things to compute, but since some of them
+    depend on another so be careful of the order.
+    @param doBVH whether to compute the bounding volume hiarchy, only
+                 necessary for hiding occluded ridges
+    @param verb  verbose: log progress
+  **/
   public function precompute(doBVH:Bool=true,verb:Bool=false){
     if(verb)trace("computing normals...");
     computeNormals();
@@ -358,7 +623,14 @@ class Mesh {
     if (doBVH){computeBVH();}else{computeBVHTrivial();}
     if(verb)trace("pre-computation finished.");
   }
-
+  /**
+    "Compute per-vertex normals
+    Uses average of per-face normals, weighted according to:
+    Max, N.
+      'Weights for Computing Vertex Normals from Facet Normals,'
+      Journal of Graphics Tools, Vol. 4, No. 2, 1999."
+    -- Trimesh2
+  **/
   public function computeNormals(){
     normals = [for (i in 0...vertices.length) new Vec3(0,0,0)];
     for (f in faces){
@@ -376,7 +648,10 @@ class Mesh {
       n.normalize();
     }
   }
-
+  /**
+    "Compute an approximate bounding sphere"
+    -- Trimesh2
+  **/
   public function computeBSphere(){
     bsphere = new BSphere();
 
@@ -431,8 +706,10 @@ class Mesh {
 
   }
 
-  // Compute a "feature size" for the mesh: computed as 1% of
-  // the reciprocal of the 10-th percentile curvature
+  /**
+    "Compute a 'feature size' for the mesh: computed as 1% of
+    the reciprocal of the 10-th percentile curvature" -- RTSC
+  **/ 
   public function computeFeatureSize(){
     var nv : Int = curv1.length;
     var nsamp = Util.min(nv, 500);
@@ -458,7 +735,9 @@ class Mesh {
     }); // todo: std::nth_element
     featureSize = Math.min(mult/samples[which],max_feat_size);
   }
-
+  /**
+    Find the faces touching each vertex
+  **/
   public function computeAdjacentFaces(){
     adjacentFaces = [for (i in 0...vertices.length) new Array<Int>()];
     for (i in 0...faces.length){
@@ -467,7 +746,11 @@ class Mesh {
       }
     }
   }
-
+  /**
+    Get the three edges from a face 
+    @param face the face
+    @return 3 vectors representing direction and length of each edge
+  **/
   public function getFaceEdges(f:Face) : haxe.ds.Vector<Vec3>{
       var e : haxe.ds.Vector<Vec3> = new haxe.ds.Vector<Vec3>(3);
       e[0] = vertices[f[2]]-vertices[f[1]];
@@ -475,7 +758,11 @@ class Mesh {
       e[2] = vertices[f[1]]-vertices[f[0]];
       return e;
   }
-
+  /**
+    "Compute the area 'belonging' to each vertex or each corner
+    of a triangle (defined as Voronoi area restricted to the 1-ring of
+    a vertex, or to the triangle)." -- Trimesh2
+  **/
   public function computePointAreas(){
     var nf : Int = faces.length;
     var nv : Int = vertices.length;
@@ -517,8 +804,10 @@ class Mesh {
       pointAreas[faces[i][2]] += cornerAreas[i][2];
     }
   }
-
-  // Rotate a coordinate system to be perpendicular to the given normal
+  /**
+    "Rotate a coordinate system to be perpendicular to the given normal" 
+    -- Trimesh2
+  **/
   private static function rotCoordSys(old_u : Vec3, old_v : Vec3, new_norm : Vec3,
                                       new_u : Vec3, new_v : Vec3){
     new_u.assign(old_u);
@@ -546,9 +835,11 @@ class Mesh {
     new_v -= dperp * Vec3.dot(new_v,perp_old);
   }
 
-  // Reproject a curvature tensor from the basis spanned by old_u and old_v
-  // (which are assumed to be unit-length and perpendicular) to the
-  // new_u, new_v basis.
+  /**
+    "Reproject a curvature tensor from the basis spanned by old_u and old_v
+    (which are assumed to be unit-length and perpendicular) to the
+    new_u, new_v basis." -- Trimesh2
+  **/ 
   private static function projCurv(old_u : Vec3, old_v : Vec3,
                                    old_ku : Float, old_kuv : Float, old_kv : Float,
                                    new_u : Vec3, new_v : Vec3) : Vec3{
@@ -565,8 +856,10 @@ class Mesh {
     return new Vec3(new_ku,new_kuv,new_kv);
   }
 
-  // Given a curvature tensor, find principal directions and curvatures
-  // Makes sure that pdir1 and pdir2 are perpendicular to normal
+  /**
+    "Given a curvature tensor, find principal directions and curvatures"
+    -- Trimesh2
+  **/ 
   private static function diagonalizeCurv(old_u : Vec3, old_v : Vec3,
                                           ku : Float, kuv : Float, kv : Float,
                                           new_norm : Vec3, 
@@ -602,7 +895,9 @@ class Mesh {
   }
 
 
-  // compute principal curvatures and directions
+  /**
+    "Compute principal curvatures and directions" -- Trimesh2
+  **/ 
   public function computeCurvatures(){
 
     var nv : Int = vertices.length;
@@ -697,7 +992,15 @@ class Mesh {
 
   }
 
-
+  /**
+     "Compute principal view-dependent curvatures and directions at vertex i.
+     ndotv = cosine of angle between normal and view direction
+     (u,v) = coordinates of w (projected view) in principal coordinates
+     Pass in u^2, u*v, and v^2, since those are readily available.
+     Fills in q1 and t1 (using the paper's notation).
+     Note that the latter is expressed in the (pdir1,pdir2) coordinate basis"
+     -- RTCC
+  **/
   private function computeVertViewDepCurv(i:Int,ndotv:Float,u2:Float,
                                           uv:Float,v2:Float) : Vec3{
     // Find the entries in Q = S * P^-1
@@ -777,12 +1080,14 @@ class Mesh {
     }
     return Dt1q1;
   }
-
-  // Draw part of a ridge/valley curve on one triangle face.  v0,v1,v2
-  // are the indices of the 3 vertices; this function assumes that the
-  // curve connects points on the edges v0-v1 and v1-v2
-  // (or connects point on v0-v1 to center if to_center is true)
-  public function segmentApparentRidge(
+  /**
+    "Draw part of a ridge/valley curve on one triangle face.  v0,v1,v2
+    are the indices of the 3 vertices; this function assumes that the
+    curve connects points on the edges v0-v1 and v1-v2
+    (or connects point on v0-v1 to center if to_center is true)"
+    --RTCC
+  **/
+  private function segmentApparentRidge(
       v0 : Int, v1 : Int, v2 : Int,
       emax0 : Float, emax1 : Float, emax2 : Float,
       kmax0 : Float, kmax1 : Float, kmax2 : Float,
@@ -844,8 +1149,10 @@ class Mesh {
     return new Ridge(p01,k01,p12,k12);
   }
 
-  // Draw apparent ridges of the mesh
-  public function facesApparentRidges(
+  /**
+    "Draw apparent ridges of the mesh" -- RTCC
+  **/
+  private function facesApparentRidges(
       ndotv : Array<Float>,
       t1q1 : Array<Vec3>, Dt1q1 : Array<Float>,
       do_bfcull : Bool, do_test : Bool, thresh : Float
@@ -942,6 +1249,14 @@ class Mesh {
     
   }
 
+  /**
+    Find apparent ridges (3D)
+    Use `Render.apparentRidges()` instead for 2D projections.
+    @param eye view position
+    @param thresh threshold value
+    @return an array of ridges
+    @see `Render.apparentRidges()`.
+  **/
   public function apparentRidges(
       eye : Vec3, thresh : Float
     ) : Array<Ridge> {
@@ -972,16 +1287,37 @@ class Mesh {
       thresh/Util.sq(featureSize)
     );
   }
-
+  /**
+    Generate a "trivial" BVH (bounding volume hierarchy),
+    containing all the faces at the root node.
+    This is a placeholder in situations
+    where BVH is not actually necessary
+    @param eye view position
+    @param thresh threshold value
+  **/
   public function computeBVHTrivial(){
     bvh = new BVHTree(this,faces.length);
     bvh.build();
   }
+  /**
+    Compute the bounding volume hierarchy of the mesh using default
+    parameters. A simple wrapper around BVHTree class's more customizable
+    constructor
+  **/
   public function computeBVH(){
     bvh = new BVHTree(this);
     bvh.build();
   }
-
+  /**
+    Check if a point in space is not occluded by the mesh
+    @param eye view position
+    @param p the point in question
+    @param tolerance a multiplier to the "epsilon", allowing only barely
+                     occluded points to pass the test. 
+                     The epsilon is also a function of the mesh size (bsphere)
+                     and detail (number of faces)
+    @return true if visible, false if invisible
+  **/
   public function visible(eye: Vec3, p : Vec3, tolerance : Float = 2) : Bool{
     var epsilon = bsphere.r/Math.sqrt(faces.length)*tolerance;
     var r = new Ray();
@@ -996,15 +1332,27 @@ class Mesh {
   }
 
 }
-
+/**
+  The ray type, for ray-object intersection tests (raycasting)
+**/
 @:expose
 class Ray {
+  /** Starting point of the ray **/
   public var o : Vec3;
+  /** Direction of the ray **/
   public var d : Vec3;
+  /** Minimum t parameter (for excluding near intersections) **/
   public var tmin : Float;
+  /** Maximum t parameter (for excluding far intersections) **/
   public var tmax : Float;
+  /** New unintialized ray **/
   public inline function new(){
   }
+  /**
+    Intersection test with a bounding box
+    @param bb the bounding box
+    @return null (no intersection), or an object holding intersection info
+  **/
   public inline function hitBBox(bb:BBox):RayHit{
     var tx1 : Float = ((bb.min[0]) - (o[0])) / (d[0]);
     var tx2 : Float = ((bb.max[0]) - (o[0])) / (d[0]);
@@ -1025,7 +1373,13 @@ class Ray {
     h.t2 = t2;
     return h;
   }
-
+  /**
+    Intersection test with a triangle
+    @param p0 first vertex of the triangle
+    @param p1 second vertex of the triangle
+    @param p2 third vertex of the triangle
+    @return null (no intersection), or an object holding intersection info
+  **/
   public inline function hitTriangle(p0:Vec3,p1:Vec3,p2:Vec3):RayHit{
     var e1 = p1 - p0;
     var e2 = p2 - p0;
@@ -1050,6 +1404,11 @@ class Ray {
     h.v = v;
     return h;
   }
+  /**
+    Intersection test with a bounding volume hierarchy
+    @param bvh the bounding volume hierarchy
+    @return null (no intersection), or an object holding intersection info
+  **/
   public inline function hitBVH(bvh:BVHTree):RayHit{
     function hitNode(node:BVHNode):RayHit{
       if (node.isLeaf()){
@@ -1104,30 +1463,75 @@ class Ray {
     return hitNode(bvh.root);
   }
 }
-
+/**
+  A struct for info from a ray-object intersection
+**/
 @:expose
 class RayHit {
+  /** `t` parameter of the ray at point of intersection **/
   public var t : Float;
+  /** 
+    `t` parameter of the ray when it exits the object
+    (only filled for bounding boxes)
+  **/
   public var t2 : Float;
+  /** 
+    The barycentric coordinate `u` of the intersection point in
+    the triangle (only filled for triangles)
+  **/
   public var u : Float;
+  /** 
+    The barycentric coordinate `v` of the intersection point in
+    the triangle (only filled for triangles)
+  **/
   public var v : Float;
+  /** 
+    The specific face in the mesh where the intersection is located
+    (only filled for BVH's)
+  **/
   public var face : Face;
+  /**
+    Construct from a ray's `t` parameter.
+    Other optional fields are manually filled in as needed
+    @param _t the `t` to use
+  **/
   public inline function new(_t:Float){
     t = _t;
   }
 }
 
+/**
+  Bounding box type (axis-aligned)
+**/
 @:expose
 class BBox {
+  /**
+    the "top-left-near" corner of the bounding box
+  **/
   public var min : Vec3;
+  /**
+    the "bottom-right-far" corner of the bounding box
+  **/
   public var max : Vec3;
+  /**
+    New empty bounding box
+  **/
   public inline function new(){
     min=new Vec3(Math.POSITIVE_INFINITY,Math.POSITIVE_INFINITY,Math.POSITIVE_INFINITY);
     max=new Vec3(Math.NEGATIVE_INFINITY,Math.NEGATIVE_INFINITY,Math.NEGATIVE_INFINITY);
   }
+  /**
+    Compute centroid of the bounding box
+    @return the centroid
+  **/
   public inline function centroid() : Vec3{
     return (min+max)*0.5;
   }
+  /**
+    Add a new point to the bounding box,
+    making the bounding box contain the point
+    @param the point
+  **/
   public inline function add(p:Vec3){
     min.x = Math.min(min.x,p.x);
     min.y = Math.min(min.y,p.y);
@@ -1136,6 +1540,11 @@ class BBox {
     max.y = Math.max(max.y,p.y);
     max.z = Math.max(max.z,p.z);
   }
+  /**
+    Merge another bounding box with this one,
+    making this bounding box contain the other
+    @param bb the other bounding box
+  **/
   public inline function merge(bb : BBox){
     min.x = Math.min(min.x,bb.min.x);
     min.y = Math.min(min.y,bb.min.y);
@@ -1144,6 +1553,10 @@ class BBox {
     max.y = Math.max(max.y,bb.max.y);
     max.z = Math.max(max.z,bb.max.z);
   }
+  /**
+    Compute the surface area of the box
+    @return the surface area
+  **/
   public inline function surfaceArea() : Float{
     var extent : Vec3 = max-min;
     var x : Float = Math.max(extent.x,0);
@@ -1153,13 +1566,33 @@ class BBox {
   }
 }
 
+/**
+  Type for a node in the bounding volume hierarchy
+**/
 @:expose
 class BVHNode {
+  /** Pointer to left child or null **/
   public var left : BVHNode;
+  /** Pointer to right child or null **/
   public var right : BVHNode;
+  /** 
+    starting index of the range of faces contained by the node 
+    in the BVH face list (inclusive)
+  **/
   public var begin : Int;
+  /** 
+    ending index of the range of faces contained by the node 
+    in the BVH face list (exclusive)
+  **/
   public var end : Int;
+  /** Bounding box of this node **/
   public var bbox : BBox;
+  /** 
+    Construct from a bounding box and a range
+    @param box bounding box
+    @param i0 starting face index (inclusive)
+    @param i1 ending face index (exclusive)
+  **/
   public inline function new (box:BBox,i0:Int,i1:Int){
     bbox = box;
     begin = i0;
@@ -1167,19 +1600,50 @@ class BVHNode {
     left = null;
     right = null;
   }
+  /**
+    Check whether the node is a leaf
+    (has neither left nor right child)
+  **/
   public inline function isLeaf(){
     return left == null && right == null;
   }
 }
 
+/**
+  Bounding volume hierarchy (BVH),
+  a tree structure for expediting geometric queries
+**/
 @:expose
 class BVHTree {
+  /** root node **/
   public var root : BVHNode;
+  /** pointer to the mesh this BVH belongs to **/
   public var mesh : Mesh;
+  /** 
+    A rearranged array of faces from the mesh,
+    a permutation of a shallow copy of the original.
+    (It contains pointers to the same faces,
+    but is not the same array as `mesh.faces`)
+  **/
   public var faces : Array<Face>;
+  /**
+    Maximum number of faces allowed in any of its leaf nodes
+  **/
   public var maxLeafSize : Int;
+  /**
+    Number of buckets used for deciding the best partition
+  **/
   public var bucketCount : Int;
-
+  /**
+    Initialize a new BVH from parameters.
+    (does not build the tree, 
+    `build()` should be explicitly called afterwards)
+    @param _mesh the mesh
+    @param _maxLeafSize maximum number of faces 
+                        allowed in a leaf node
+    @param _bucketCount number of buckets used 
+                        for deciding the best partition
+  **/
   public function new(
     _mesh : Mesh,
     _maxLeafSize:Int=4,_bucketCount:Int=8
@@ -1190,6 +1654,9 @@ class BVHTree {
     mesh = _mesh;
   }
 
+  /**
+    Build the bounding volume hierachy
+  **/
   public function build(){
     function bboxAddFace(bbox:BBox,f : Face){
       for (j in 0...3){
@@ -1287,8 +1754,11 @@ class BVHTree {
   }
 
 }
-
-class BVHBucket {
+/**
+  BVH "bucket" struct 
+  internally used by bounding volume hierachy computation
+**/
+private class BVHBucket {
   public var min : Float;
   public var max : Float;
   public var count : Int;
@@ -1301,7 +1771,11 @@ class BVHBucket {
   }
 
 }
-class BVHPartition {
+/**
+  BVH partition information
+  internally used by bounding volume hierachy computation
+**/
+private class BVHPartition {
   public var planeIndex : Int;
   public var axis : Int;
   public var leftCount : Int = 0;
@@ -1310,7 +1784,7 @@ class BVHPartition {
   public var rightArea : Float = 0;
   public var leftBBox : BBox;
   public var rightBBox : BBox;
-  public var SAH : Float = 0;
+  public var SAH : Float = 0; //surface area heuristic
   public function new(){
     leftBBox = new BBox();
     rightBBox = new BBox();
@@ -1319,14 +1793,31 @@ class BVHPartition {
 
 
 
-// bare minimum .obj format parser
+/**
+  Baseline `.obj` format parser:
+  vertex coordinates + trianglular faces
+**/
 @:expose
 class OBJParser {
 #if sys
+  /**
+    Read mesh directly from an `.obj` file on disk
+    (only available with target languages with filesystem access)
+    @param path the file path
+    @return the mesh
+    @see `OBJParser.fromString()`
+  **/
   public static function fromFile(path : String) : Mesh{
     return fromString(sys.io.File.getContent(path));
   }
 #end
+  /**
+    Read mesh from a string containing the `.obj` encoding.
+    Ignores texcoords (not useful),
+    ignores normals (should be computed by `Mesh.computeNormals()`)
+    @param path the file path
+    @return the mesh
+  **/
   public static function fromString(str : String) : Mesh{
     var mesh : Mesh = new Mesh();
     mesh.vertices = [];
@@ -1369,25 +1860,50 @@ class OBJParser {
 
 
 
-
+/**
+  Struct for a drawable 2D line segment,
+  holding endpoint coordinates and corresponding opacity
+**/
 @:expose
 class Line {
+  /** x coorinate of first endpoint **/
   public var x1 : Float;
+  /** y coorinate of first endpoint **/
   public var y1 : Float;
+  /** x coorinate of second endpoint **/
   public var x2 : Float;
+  /** y coorinate of second endpoint **/
   public var y2 : Float;
+  /** opacity at first endpoint **/
   public var opacity1 : Float = 1;
+  /** opacity at second endpoint **/
   public var opacity2 : Float = 1;
+  /** 
+    New line segment from endpoints
+    @param _x1 x coorinate of first endpoint
+    @param _y1 y coorinate of first endpoint
+    @param _x2 x coorinate of second endpoint
+    @param _y2 y coorinate of second endpoint
+  **/
   public function new (_x1:Float, _y1:Float, _x2:Float, _y2:Float){
     x1 = _x1;
     y1 = _y1;
     x2 = _x2;
     y2 = _y2;
   }
+  /**
+    Set opacity at each end
+    @param o1 opacity at first endpoint
+    @param o2 opacity at second endpoint
+  **/
   public function setOpacity(o1:Float,o2:Float){
     opacity1 = o1;
     opacity2 = o2;
   }
+  /**
+    Flip direction of the line segment,
+    making the first endpoint the second, and the second the first
+  **/
   public function flip(){
     var tmp : Float;
     tmp = x1;
@@ -1402,68 +1918,140 @@ class Line {
   }
 }
 
+/**
+  2D polyline type. An abstract class mapping to an array of `Vec3`s,
+  with the `z` component at each point representing opacity there
+**/
 @:expose
 abstract Polyline (Array<Vec3>) {
+  /** Length (number of points) of the polyline, read-only **/
   public var length(get, set):Int;
+  /** New empty polyline **/
   public inline function new(){
     this = [];
   }
-  public inline function get_length(){
+  private inline function get_length(){
     return this.length;
   }
-  public inline function set_length(v:Int):Int{
+  private inline function set_length(v:Int):Int{
     return this.length; //readonly
   }
+  /** 
+    Retrieve y coordinate of the first point, 
+    rounded to integer (for segment-connecting algorithm)
+  **/
   public inline function startY() : Int{
     return Util.rndInt(this[0].y);
   }
+  /** 
+    Retrieve y coordinate of the last point, 
+    rounded to integer (for segment-connecting algorithm)
+  **/
   public inline function endY() : Int{
     return Util.rndInt(this[this.length-1].y);
   }
+  /** 
+    Retrieve x coordinate of the first point
+    (for segment-connecting algorithm)
+  **/
   public inline function startX() : Float{
     return this[0].x;
   }
+  /** 
+    Retrieve x coordinate of the last point
+    (for segment-connecting algorithm)
+  **/
   public inline function endX() : Float{
     return this[this.length-1].x;
   }
+  /** 
+    Get point in the polyline via subscript operator (`[i]`)
+    @param i the index
+  **/
   @:arrayAccess
-  public inline function get(i:Int) {
+  public inline function get(i:Int):Vec3 {
     return this[i];
   }
+  /** 
+    Set point in the polyline via subscript operator (`[i]`)
+    @param i the index
+    @param v the value
+  **/
   @:arrayAccess
   public inline function set(i:Int,v:Vec3):Vec3 {
     this[i] = v;
     return v;
   }
+  /** 
+    Add a new point to the end of the polyline
+    @param v the point to be added
+  **/
   public inline function push(v:Vec3):Int{
     this.push(v);
     return this.length;
   }
+  /** 
+    Add a new point at the beginning of the polyline
+    @param v the point to be added
+  **/
   public inline function unshift(v:Vec3){
     this.unshift(v);
   }
 }
 
-
+/**
+  A renderer for projecting 3D information (e.g. apparent ridges)
+  onto 2D and doing neccessary pre- and postprocessing 
+  to produce drawable elements ready for 
+  graphics/imaging frameworks. Uses the pinhole camera model, with
+  camera fixed at `(0,0,0)` pointing toward `+z`.
+**/
 @:expose
 class Render {
+  /** The mesh to be rendered **/
   public var mesh : Mesh;
+  /** Array of generated lines for drawing **/
   public var lines : Array<Line>; 
+  /** 
+    Array of generated polylines for drawing,
+    populated by `Render.buildPolylines()`
+  **/
   public var polylines : Array<Polyline>;
 
+  /** Focal length of the camera **/
   public var focal : Float = 1000;
+  /** Width of the canvas **/
   public var width : Int;
+  /** Height of the canvas **/
   public var height : Int;
-  public var verbose : Bool = true;
- 
+  /** Whether to log progress **/
+  private var verbose : Bool = true;
+  /** 
+    Were the mesh properties necessary for computing apparent ridges
+    already computed? If `false`, `Render.apparentRidges()` will call
+    `Mesh.precompute()` when itself is called for the first time, 
+    and set this flag to `true`. If you transformed or otherwise mutated
+    the mesh, set this flag to `false` again. (Or explicitly call the
+    mesh's `computeXxxxx()` methods)
+  **/
   public var didPrecompute : Bool = false;
 
+  /**
+    New render
+    @param _mesh the mesh to be rendered
+    @param w width of the canvas
+    @param h height of the canvas
+  **/
   public function new(_mesh:Mesh, w : Int, h : Int){
     mesh = _mesh;
     lines = [];
     width = w;
     height = h;
   }
+  /**
+    Clear the rendering, 
+    emptying `Render.lines` and `Render.polylines`.
+  **/
   public function clear(){
     if (lines != null){
       lines.splice(0,lines.length);
@@ -1472,17 +2060,46 @@ class Render {
       polylines.splice(0,polylines.length);
     }
   }
+  /**
+    Set the focal length of the camera
+    @param f focal length
+  **/
   public function setFocal(f : Float){
     focal = f;
   }
+  /**
+    Set verbosity level
+    @param v `0` => no log, `1` => log progress
+  **/
   public function setVerbose(v : Int){
     verbose = (v > 0);
   }
+  /**
+    Transform the mesh with a custom 4x4 transformation matrix,
+    to place it at desired a position and angle.
+    @param mat4x4 a flat, row-major 16 element array
+    @see `Render.scaleRotateTranslate()` `Render.autoPlace()`
+  **/
   public function transform(mat4x4 : Array<Float>){
     for (i in 0...mesh.vertices.length){
       mesh.vertices[i] = Util.matTrfm(mat4x4,mesh.vertices[i]);
     }
   }
+  /**
+    First scale the mesh, then rotate the mesh in X-Y-Z order, 
+    and finally translate the mesh. A convenient alternative to
+    `Render.transform()`, covering common use cases.
+    @param sx scale       along  the x axis
+    @param sy scale       along  the y axis
+    @param sz scale       along  the z axis
+    @param rx rotation    around the x axis
+    @param ry rotation    around the y axis
+    @param rz rotation    around the z axis
+    @param dx translation along  the x axis
+    @param dy translation along  the y axis
+    @param dz translation along  the z axis
+    @see `Render.transform()` `Render.autoPlace()`
+  **/
   public function scaleRotateTranslate(
     sx : Float, sy : Float, sz : Float,
     rx : Float, ry : Float, rz : Float,
@@ -1499,6 +2116,12 @@ class Render {
       Util.matMult(trsl,Util.matMult(rotz,Util.matMult(roty,rotx)))
     );
   }
+  /**
+    Automatically put the mesh at a nice distance and scale for viewing.
+    Tweak the two arguments to adjust how "strong" the perspective is
+    @param zFactor multiplier for `z` distance
+    @param fFactor multiplier for focal length
+  **/
   public function autoPlace(zFactor:Float=1.5,fFactor:Float=1.25){
     mesh.computeBSphere();
     transform(Util.matTrsl(
@@ -1515,6 +2138,12 @@ class Render {
     // trace(mesh.bsphere.o,mesh.bsphere.r);
     setFocal(r*fFactor);
   }
+
+  /**
+    Simply plot all vertices in the mesh (e.g. for sanity checking)
+    Each vertex is plotted as an "X" using two short `Line`s.
+    Populates the `Render.lines` list.
+  **/
   public function vertices(){
     var offs = new Vec3(width/2,height/2,0);
     var yflip = new Vec3(-1,-1,1);
@@ -1525,6 +2154,13 @@ class Render {
       lines.push(new Line(p.x+1,p.y-1,p.x-1,p.y+1));
     }
   }
+
+  /**
+    Simply plot all edges in the mesh (e.g. for sanity checking)
+    Edges shared by multiple faces will be repeated, since `Mesh`
+    does not keep a separate list for edges.
+    Populates the `Render.lines` list.
+  **/
   public function edges(){
     var offs = new Vec3(width/2,height/2,0);
     var yflip = new Vec3(-1,-1,1);
@@ -1540,6 +2176,25 @@ class Render {
       lines.push(new Line(p2.x,p2.y,p0.x,p0.y));
     }
   }
+  /**
+    Plot the apparent ridges of the mesh.
+    This calls `Mesh.apparentRidges()` with appropriate parameters,
+    and is usually where the heavy computation happens.
+    If the `Render.didPrecompute` flag indicates that the necessary 
+    mesh properties have not yet been computed, those will also be 
+    calculated here.
+    Populates the `Render.lines` list.
+    @param thresh apparent ridge threshold
+    @param cull what to do with occluded ridges. 
+                Negative values => 
+                 display hidden ridges (much faster).
+                Non-negative    => 
+                 use (software) raycasting to 
+                 cull hidden ridges, with
+                 the argument as a multiplier to
+                 the raycaster "tolerance"
+                 (see `Mesh.visible()`)
+  **/
   public function apparentRidges(thresh : Float, cull : Float = 2){
     if (!didPrecompute){
       if (verbose)trace("precomputing mesh properties...");
@@ -1569,9 +2224,31 @@ class Render {
     if (verbose)trace("apparent ridges computation finished.");
   }
 
+  /**
+    Connect line segments into continous polylines.
+    Populates the `Render.polylines` list.
+    Uses a custom (novel?) scanline-like algorithm to solve this problem
+    (relatively) efficiently. See the source comment for details.
+    @param epsilon the maximum endpoint x difference for two segments 
+                   with matched endpoint y coordiante to be considered 
+                   connectable
+  **/
   public function buildPolylines(epsilon : Float = 1){
+    // Main idea: instead of trying to match every segment to every other
+    // segment, quantize their y-coordinates and place them in buckets.
+    // only the polylines that ends on a certain row can be matched with
+    // polylines that starts on that row. The algorithm scans each row,
+    // from top to bottom and stitch together eligible polylines.
+
+    // It has a small limitation: A U-shaped structure will be connected
+    // into 2 polylines (left half and right half) instead of a single
+    // polyline.
+
     if (verbose)trace("building polylines from ridge segments...");
     polylines = [];
+
+    // throw out segments with out-of-canvas y coordiantes
+    // TODO: truncate them instead.
     lines = lines.filter(function(a:Line):Bool{
       return !(
         a.y1 < 0 || a.y1 > height-1 || 
@@ -1579,6 +2256,9 @@ class Render {
       );
     });
 
+    // "sort" each segment's endpoints by Y,
+    // making first endpoints always above second endpoint.
+    // compare x coordinate to break ties.
     for (i in 0...lines.length){
       var y1 : Float = lines[i].y1;
       var y2 : Float = lines[i].y2;
@@ -1590,9 +2270,18 @@ class Render {
         }
       }
     }
+    
+    // `rows` and `ends` are buckets corresponding to each row
+    // of quantized Y coordinates holding (pointers to)
+    // work-in-progress polylines.
+
+    // rows[i] = list of polylines that starts on the ith row
+    // ends[i] = list of polylines that ends   on the ith row
     var rows : Array<Array<Polyline>> = [for (i in 0...height) []];
     var ends : Array<Array<Polyline>> = [for (i in 0...height) []];
 
+    // make a new polyline from a single segment
+    // this is how all polylines started...
     function singleton(a:Line):Polyline{
       var p : Polyline = new Polyline();
       p.push(new Vec3(a.x1,a.y1,a.opacity1));
@@ -1600,26 +2289,38 @@ class Render {
       return p;
     }
 
+    // convert all segment into singleton polylines
+    // and place them in correct buckets
     for (i in 0...lines.length){
       var p : Polyline = singleton(lines[i]);
       rows[Util.rndInt(lines[i].y1)].push(p);
       ends[Util.rndInt(lines[i].y2)].push(p);
     }
+
+    // for each row, match the polylines that starts
+    // on this row and the ones that ends on this row
     for (i in 0...rows.length){
+      
+      // visit the those that start on this row in reverse order
       var nj : Int = rows[i].length;
       for (_j in 0...nj){    var j : Int = nj-_j-1;
         if (rows[i][j] == null){
           continue;
         }
+
+        // visit the those that start on this row in reverse order
         var nk : Int = ends[i].length;
         for (_k in 0...nk){  var k : Int = nk-_k-1;
           if (ends[i][k] == null){
             continue;
           }
 
+          // skip itself
           if (rows[i][j] == ends[i][k]){
             continue;
           }
+
+          // see if they match
           var r : Int = rows[i][j].endY();
           var d : Float = Math.abs( rows[i][j].startX() - ends[i][k].endX() );
           if ( d <= epsilon){
@@ -1629,6 +2330,8 @@ class Render {
                 rows[i][j][0].z
               )/2;
             }
+            // update the buckets
+            // hard to get right...
             for (t in (d<1?1:0)...rows[i][j].length){
               ends[i][k].push(rows[i][j][t]);
             }
@@ -1641,6 +2344,7 @@ class Render {
         }
       }
     }
+    // grab the finished polylines
     for (i in 0...ends.length){
       for (j in 0...ends[i].length){
         if (ends[i][j] != null){
@@ -1648,6 +2352,7 @@ class Render {
         }
       }
     }
+    // throw out the really tiny isolated segments.
     polylines = polylines.filter(function(p:Polyline):Bool{
       if (p.length > 2){
         return true;
@@ -1668,9 +2373,21 @@ class Render {
 
 }
 
+/**
+  Make raster renderings of a mesh with (software) raycasting,
+  to visualize mesh properties such as normals and curvatures.
+  (Static methods)
+**/
 @:expose
 class PixelMap {
 
+  /**
+    Cast a ray from each display pixel, with a customizable callback
+    function for each result.
+    @param render The renderer object
+    @param fun   The callback function that takes arguments 
+                 `(RayHit|null, width, height)`
+  **/
   public static function raycast(render:Render,fun:RayHit->Int->Int->Void){
     var min : Float = Math.POSITIVE_INFINITY;
     var max : Float = Math.NEGATIVE_INFINITY;
@@ -1694,7 +2411,13 @@ class PixelMap {
       }
     }
   }
-  
+  /**
+    Compute the per-pixel depth map. 
+    When `normalize=false`, empty void is encoded as `Math.POSITIVE_INFINITY`.
+    @param render The renderer object
+    @param normalize Whether to normalize to range [0,1]
+    @return a flat vector with width x height elements
+  **/
   public static function depth(render:Render,normalize:Bool=false) : haxe.ds.Vector<Float>{
     var data : haxe.ds.Vector<Float> = new haxe.ds.Vector<Float>(render.width*render.height);
 
@@ -1723,7 +2446,12 @@ class PixelMap {
     }
     return data;
   }
-
+  /**
+    Compute the per-pixel normal map. 
+    @param render The renderer object
+    @return a flat vector with width x height x 3 elements
+            (`x` `y` `z` compnent of the normal as the 3 channels)
+  **/
   public static function normal(render:Render) : haxe.ds.Vector<Float>{
     var data : haxe.ds.Vector<Float> = new haxe.ds.Vector<Float>(render.width*render.height*3);
 
@@ -1748,7 +2476,12 @@ class PixelMap {
     return data;
   }
 
-  
+  /**
+    Compute the per-pixel curvature map
+    @param render The renderer object
+    @return a flat vector with width x height x 2 elements
+            (curvature in the two principle axes as the 2 channels)
+  **/
   public static function curvature(render:Render) : haxe.ds.Vector<Float>{
     var data : haxe.ds.Vector<Float> = new haxe.ds.Vector<Float>(render.width*render.height*2);
 
@@ -1775,6 +2508,14 @@ class PixelMap {
     return data;
   }
 
+  /**
+    Compute per-pixel Lambertian ("n-dot-l") shading.
+    When `normalize=false`, empty void is encoded as `Math.NEGATIVE_INFINITY`.
+    @param render The renderer object
+    @param light The direction of light
+    @param normalize Whether to normalize to range [0,1]
+    @return a flat vector with width x height elements
+  **/
   public static function lambertian(render:Render,light:Vec3,normalize:Bool=true) : haxe.ds.Vector<Float>{
     var data : haxe.ds.Vector<Float> = new haxe.ds.Vector<Float>(render.width*render.height);
     var min : Float = Math.POSITIVE_INFINITY;
@@ -1808,6 +2549,14 @@ class PixelMap {
     return data;
   }
 
+  /**
+    Compute per-pixel ambient occlusion
+    @param render The renderer object
+    @param numSamples Number of samples
+                      Smaller=>faster,noisier. Larger=>slower,finer
+    @param normalize Whether to normalize to range [0,1]
+    @return a flat vector with width x height elements
+  **/
   public static function ambientOcclusion(render:Render,numSamples:Int=32,normalize:Bool=true) : haxe.ds.Vector<Float>{
     var data : haxe.ds.Vector<Float> = new haxe.ds.Vector<Float>(render.width*render.height);
     var min : Float = Math.POSITIVE_INFINITY;
@@ -1860,7 +2609,19 @@ class PixelMap {
     return data;
   }
 
-
+  /**
+    Encode pixel array as a PPM (Netpbm color image) string,
+    for previewing results.
+    (PPM is a dead simple image format with a trivial implementation)
+    @param data the array holding image information,
+                any of those returned by methods in the `PixelMap` class
+                works.
+    @param w width of the image
+    @param h height of the image
+    @param min minimum pixel value (used for normalization)
+    @param max maximum pixel value (used for normalization)
+    @return a string containing PPM encoding
+  **/
   public static function toPPMString(
     data : haxe.ds.Vector<Float>, 
     w : Int, h : Int, min : Float, max : Float
@@ -1882,13 +2643,26 @@ class PixelMap {
   }
 }
 
+/**
+  Static methods for encoding `Render` result 
+  as `.svg` (scalable vector graphics) files, with various options
+  to choose from for different use cases.
+**/
 @:expose
 class SVGWriter {
 
+  /** round to 2 decimal places **/
   static inline function rd(x : Float){
     return Math.round(x*100)/100;
   }
 
+  /** 
+    Use SVG `<line>` element to encode each segment from `Render.lines`.
+    @param render The renderer object
+    @param useOpacity Whether to map opacity encoded in `Line`s 
+                      to the SVG `stroke` attribute (grayscale)
+    @return the SVG string
+  **/
   public static function lines(render : Render, useOpacity : Bool = true) : String{
     var w : Int = render.width;
     var h : Int = render.height;
@@ -1908,6 +2682,14 @@ class SVGWriter {
     return out.toString();
   }
 
+  /** 
+    Use SVG `<polyline>` element to draw the connected polylines 
+    from `Render.polylines`. This is more suitable for use with plotters.
+    @param render The renderer object
+    @param useOpacity Whether to color each polyline with a random color
+                      ("debug" option for visually distinguishing the polylines)
+    @return the SVG string
+  **/
   public static function polylines(render : Render, colorful : Bool = false) : String{
     var w : Int = render.width;
     var h : Int = render.height;
@@ -1930,6 +2712,15 @@ class SVGWriter {
     return out.toString();
   }
 
+  /**
+    Render fine gradated strokes, fully visualizing properties of apparent ridges.
+    Produces nice looking image, but not suitable as intermediate format for
+    other hardware/softwares.
+    @param render The renderer object
+    @param acc Accuracy, 
+               affects the number of tiny segments to use for simulating gradients
+    @return the SVG string
+  **/
   public static function gradients(render : Render, acc : Float = 1) : String{
     var w : Int = render.width;
     var h : Int = render.height;

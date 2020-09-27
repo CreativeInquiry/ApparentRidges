@@ -708,31 +708,31 @@ apparentridges_Mesh.prototype = {
 			doBVH = true;
 		}
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:337:","computing normals...");
+			console.log("apparentridges/ApparentRidges.hx:611:","computing normals...");
 		}
 		this.computeNormals();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:339:","computing point areas...");
+			console.log("apparentridges/ApparentRidges.hx:613:","computing point areas...");
 		}
 		this.computePointAreas();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:341:","computing adjacent faces...");
+			console.log("apparentridges/ApparentRidges.hx:615:","computing adjacent faces...");
 		}
 		this.computeAdjacentFaces();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:343:","computing curvatures...");
+			console.log("apparentridges/ApparentRidges.hx:617:","computing curvatures...");
 		}
 		this.computeCurvatures();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:345:","computing bounding sphere...");
+			console.log("apparentridges/ApparentRidges.hx:619:","computing bounding sphere...");
 		}
 		this.computeBSphere();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:347:","computing feature size...");
+			console.log("apparentridges/ApparentRidges.hx:621:","computing feature size...");
 		}
 		this.computeFeatureSize();
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:349:","computing bounding volume hierarchy...");
+			console.log("apparentridges/ApparentRidges.hx:623:","computing bounding volume hierarchy...");
 		}
 		if(doBVH) {
 			this.computeBVH();
@@ -740,7 +740,7 @@ apparentridges_Mesh.prototype = {
 			this.computeBVHTrivial();
 		}
 		if(verb) {
-			console.log("apparentridges/ApparentRidges.hx:351:","pre-computation finished.");
+			console.log("apparentridges/ApparentRidges.hx:625:","pre-computation finished.");
 		}
 	}
 	,computeNormals: function() {
@@ -2476,7 +2476,7 @@ apparentridges_BVHTree.prototype = {
 				var _g2 = _gthis.bucketCount;
 				while(_g1 < _g2) {
 					var i = _g1++;
-					var b = new apparentridges_BVHBucket();
+					var b = new apparentridges__$ApparentRidges_BVHBucket();
 					b.min = lo + i / _gthis.bucketCount * (hi - lo);
 					b.max = b.min + (hi - lo) / _gthis.bucketCount;
 					buckets.push(b);
@@ -2535,7 +2535,7 @@ apparentridges_BVHTree.prototype = {
 				var _g8 = _gthis.bucketCount;
 				while(_g7 < _g8) {
 					var i3 = _g7++;
-					var part = new apparentridges_BVHPartition();
+					var part = new apparentridges__$ApparentRidges_BVHPartition();
 					part.planeIndex = i3;
 					part.axis = ax;
 					var _g9 = 0;
@@ -2670,13 +2670,13 @@ apparentridges_BVHTree.prototype = {
 		this.root = buildRange(0,this.faces.length);
 	}
 };
-var apparentridges_BVHBucket = function() {
+var apparentridges__$ApparentRidges_BVHBucket = function() {
 	this.bbox = new apparentridges_BBox();
 	this.area = 0;
 	this.count = 0;
 };
-apparentridges_BVHBucket.__name__ = true;
-var apparentridges_BVHPartition = function() {
+apparentridges__$ApparentRidges_BVHBucket.__name__ = true;
+var apparentridges__$ApparentRidges_BVHPartition = function() {
 	this.SAH = 0;
 	this.rightArea = 0;
 	this.leftArea = 0;
@@ -2685,7 +2685,7 @@ var apparentridges_BVHPartition = function() {
 	this.leftBBox = new apparentridges_BBox();
 	this.rightBBox = new apparentridges_BBox();
 };
-apparentridges_BVHPartition.__name__ = true;
+apparentridges__$ApparentRidges_BVHPartition.__name__ = true;
 var apparentridges_OBJParser = $hx_exports["apparentridges"]["OBJParser"] = function() { };
 apparentridges_OBJParser.__name__ = true;
 apparentridges_OBJParser.fromString = function(str) {
@@ -3087,7 +3087,7 @@ apparentridges_Render.prototype = {
 		}
 		if(!this.didPrecompute) {
 			if(this.verbose) {
-				console.log("apparentridges/ApparentRidges.hx:1537:","precomputing mesh properties...");
+				console.log("apparentridges/ApparentRidges.hx:2098:","precomputing mesh properties...");
 			}
 			this.mesh.precompute(cull >= 0,this.verbose);
 			this.didPrecompute = true;
@@ -3113,11 +3113,11 @@ apparentridges_Render.prototype = {
 		this2[2] = 0;
 		var eye = this2;
 		if(this.verbose) {
-			console.log("apparentridges/ApparentRidges.hx:1545:","generating apparent ridges...");
+			console.log("apparentridges/ApparentRidges.hx:2106:","generating apparent ridges...");
 		}
 		var ridges = this.mesh.apparentRidges(eye,thresh);
 		if(this.verbose) {
-			console.log("apparentridges/ApparentRidges.hx:1547:","projecting apparent ridges onto 2D plane...");
+			console.log("apparentridges/ApparentRidges.hx:2108:","projecting apparent ridges onto 2D plane...");
 		}
 		var _g = 0;
 		var _g1 = ridges.length;
@@ -3174,7 +3174,7 @@ apparentridges_Render.prototype = {
 			this.lines.push(l);
 		}
 		if(this.verbose) {
-			console.log("apparentridges/ApparentRidges.hx:1561:","apparent ridges computation finished.");
+			console.log("apparentridges/ApparentRidges.hx:2122:","apparent ridges computation finished.");
 		}
 	}
 	,buildPolylines: function(epsilon) {
@@ -3183,7 +3183,7 @@ apparentridges_Render.prototype = {
 		}
 		var _gthis = this;
 		if(this.verbose) {
-			console.log("apparentridges/ApparentRidges.hx:1565:","building polylines from ridge segments...");
+			console.log("apparentridges/ApparentRidges.hx:2126:","building polylines from ridge segments...");
 		}
 		this.polylines = [];
 		var _g = [];
@@ -3344,7 +3344,7 @@ apparentridges_Render.prototype = {
 		}
 		this.polylines = _g;
 		if(this.verbose) {
-			console.log("apparentridges/ApparentRidges.hx:1656:","polylines built.");
+			console.log("apparentridges/ApparentRidges.hx:2217:","polylines built.");
 		}
 	}
 };

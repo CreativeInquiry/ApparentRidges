@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class Mesh_visible_994__Fun extends haxe.lang.Function
+public class PixelMap_ambientOcclusion_2286__Fun extends haxe.lang.Function
 {
-	public Mesh_visible_994__Fun(double r_tmin, double r_tmax, double[] r_o, double[] r_d, haxe.lang.Function[] hitNode, apparentridges.BVHTree bvh)
+	public PixelMap_ambientOcclusion_2286__Fun(double r_tmin, double r_tmax, double[] r_o, double[] r_d, haxe.lang.Function[] hitNode, apparentridges.BVHTree bvh)
 	{
 		super(1, 0);
 		this.r_tmin = r_tmin;

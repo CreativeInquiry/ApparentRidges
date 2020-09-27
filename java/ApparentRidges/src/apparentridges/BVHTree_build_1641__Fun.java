@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class BVHTree_build_1194__Fun extends haxe.lang.Function
+public class BVHTree_build_1641__Fun extends haxe.lang.Function
 {
-	public BVHTree_build_1194__Fun(apparentridges.BVHTree _gthis)
+	public BVHTree_build_1641__Fun(apparentridges.BVHTree _gthis)
 	{
 		super(2, 0);
 		this._gthis = _gthis;

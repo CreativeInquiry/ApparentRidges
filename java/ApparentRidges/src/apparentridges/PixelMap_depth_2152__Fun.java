@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class PixelMap_depth_1705__Fun extends haxe.lang.Function
+public class PixelMap_depth_2152__Fun extends haxe.lang.Function
 {
-	public PixelMap_depth_1705__Fun(apparentridges.Render render, double[] min, double[] max, double[] data)
+	public PixelMap_depth_2152__Fun(apparentridges.Render render, double[] min, double[] max, double[] data)
 	{
 		super(3, 0);
 		this.render = render;

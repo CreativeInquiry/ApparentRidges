@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class BVHTree_build_1265__Fun extends haxe.lang.Function
+public class BVHTree_build_1712__Fun extends haxe.lang.Function
 {
-	public BVHTree_build_1265__Fun(apparentridges.BVHPartition minPart, haxe.lang.Function bboxAddFace)
+	public BVHTree_build_1712__Fun(apparentridges.BVHPartition minPart, haxe.lang.Function bboxAddFace)
 	{
 		super(2, 1);
 		this.minPart = minPart;

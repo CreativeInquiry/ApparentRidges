@@ -4,15 +4,15 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class Render_buildPolylines_1596__Fun extends haxe.lang.Function
+public class Render_buildPolylines_2043__Fun extends haxe.lang.Function
 {
-	public Render_buildPolylines_1596__Fun()
+	public Render_buildPolylines_2043__Fun()
 	{
 		super(1, 0);
 	}
 	
 	
-	public static apparentridges.Render_buildPolylines_1596__Fun __hx_current;
+	public static apparentridges.Render_buildPolylines_2043__Fun __hx_current;
 	
 	@Override public java.lang.Object __hx_invoke1_o(double __fn_float1, java.lang.Object __fn_dyn1)
 	{

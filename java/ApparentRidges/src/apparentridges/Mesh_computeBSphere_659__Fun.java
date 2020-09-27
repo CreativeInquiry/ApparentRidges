@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class Mesh_computeBSphere_383__Fun extends haxe.lang.Function
+public class Mesh_computeBSphere_659__Fun extends haxe.lang.Function
 {
-	public Mesh_computeBSphere_383__Fun(apparentridges.Mesh _gthis)
+	public Mesh_computeBSphere_659__Fun(apparentridges.Mesh _gthis)
 	{
 		super(1, 1);
 		this._gthis = _gthis;

@@ -19,7 +19,7 @@ public class BVHTree extends haxe.lang.HxObject
 	
 	protected static void __hx_ctor_apparentridges_BVHTree(apparentridges.BVHTree __hx_this, apparentridges.Mesh _mesh, java.lang.Object _maxLeafSize, java.lang.Object _bucketCount)
 	{
-		int _bucketCount1 = ( (haxe.lang.Runtime.eq(_bucketCount, null)) ? (8) : (((int) (haxe.lang.Runtime.toInt(_bucketCount)) )) );
+		int _bucketCount1 = ( (haxe.lang.Runtime.eq(_bucketCount, null)) ? (4) : (((int) (haxe.lang.Runtime.toInt(_bucketCount)) )) );
 		int _maxLeafSize1 = ( (haxe.lang.Runtime.eq(_maxLeafSize, null)) ? (4) : (((int) (haxe.lang.Runtime.toInt(_maxLeafSize)) )) );
 		__hx_this.maxLeafSize = _maxLeafSize1;
 		__hx_this.bucketCount = _bucketCount1;
@@ -41,9 +41,9 @@ public class BVHTree extends haxe.lang.HxObject
 	public void build()
 	{
 		apparentridges.BVHTree _gthis = this;
-		haxe.lang.Function bboxAddFace = new apparentridges.BVHTree_build_1194__Fun(_gthis);
+		haxe.lang.Function bboxAddFace = new apparentridges.BVHTree_build_1641__Fun(_gthis);
 		haxe.lang.Function[] buildRange = new haxe.lang.Function[]{null};
-		buildRange[0] = new apparentridges.BVHTree_build_1199__Fun(buildRange, bboxAddFace, _gthis);
+		buildRange[0] = new apparentridges.BVHTree_build_1646__Fun(buildRange, bboxAddFace, _gthis);
 		this.root = ((apparentridges.BVHNode) (buildRange[0].__hx_invoke2_o(((double) (0) ), haxe.lang.Runtime.undefined, ((double) (this.faces.length) ), haxe.lang.Runtime.undefined)) );
 	}
 	

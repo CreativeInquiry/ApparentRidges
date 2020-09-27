@@ -82,7 +82,7 @@ public class PixelMap extends haxe.lang.HxObject
 						
 						apparentridges.BVHTree bvh = render.mesh.bvh;
 						haxe.lang.Function[] hitNode = new haxe.lang.Function[]{null};
-						hitNode[0] = new apparentridges.PixelMap_raycast_1691__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
+						hitNode[0] = new apparentridges.PixelMap_raycast_2138__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
 						apparentridges.RayHit h = ((apparentridges.RayHit) (hitNode[0].__hx_invoke1_o(0.0, bvh.root)) );
 						fun.__hx_invoke3_o(0.0, h, ((double) (( x + hh )) ), haxe.lang.Runtime.undefined, ((double) (( y + hh )) ), haxe.lang.Runtime.undefined);
 					}
@@ -103,7 +103,7 @@ public class PixelMap extends haxe.lang.HxObject
 		double[] data = ((double[]) (this1) );
 		double[] min = new double[]{((double) (java.lang.Double.POSITIVE_INFINITY) )};
 		double[] max = new double[]{((double) (java.lang.Double.NEGATIVE_INFINITY) )};
-		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_depth_1705__Fun(render, min, max, data));
+		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_depth_2152__Fun(render, min, max, data));
 		if (normalize1) 
 		{
 			int _g = 0;
@@ -132,7 +132,7 @@ public class PixelMap extends haxe.lang.HxObject
 	{
 		double[] this1 = new double[( ( render.width * render.height ) * 3 )];
 		double[] data = ((double[]) (this1) );
-		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_normal_1730__Fun(render, data));
+		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_normal_2177__Fun(render, data));
 		return data;
 	}
 	
@@ -141,7 +141,7 @@ public class PixelMap extends haxe.lang.HxObject
 	{
 		double[] this1 = new double[( ( render.width * render.height ) * 2 )];
 		double[] data = ((double[]) (this1) );
-		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_curvature_1755__Fun(render, data));
+		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_curvature_2202__Fun(render, data));
 		return data;
 	}
 	
@@ -153,7 +153,7 @@ public class PixelMap extends haxe.lang.HxObject
 		double[] data = ((double[]) (this1) );
 		double[] min = new double[]{((double) (java.lang.Double.POSITIVE_INFINITY) )};
 		double[] max = new double[]{((double) (java.lang.Double.NEGATIVE_INFINITY) )};
-		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_lambertian_1783__Fun(render, min, max, light, data));
+		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_lambertian_2230__Fun(render, min, max, light, data));
 		if (normalize1) 
 		{
 			int _g = 0;
@@ -186,7 +186,7 @@ public class PixelMap extends haxe.lang.HxObject
 		double[] data = ((double[]) (this1) );
 		double[] min = new double[]{((double) (java.lang.Double.POSITIVE_INFINITY) )};
 		double[] max = new double[]{((double) (java.lang.Double.NEGATIVE_INFINITY) )};
-		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_ambientOcclusion_1816__Fun(render, numSamples1, min, max, data));
+		apparentridges.PixelMap.raycast(render, new apparentridges.PixelMap_ambientOcclusion_2263__Fun(render, numSamples1, min, max, data));
 		if (normalize1) 
 		{
 			int _g = 0;

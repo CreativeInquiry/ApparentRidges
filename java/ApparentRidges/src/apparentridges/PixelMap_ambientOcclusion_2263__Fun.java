@@ -4,9 +4,9 @@ package apparentridges;
 import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
-public class PixelMap_ambientOcclusion_1816__Fun extends haxe.lang.Function
+public class PixelMap_ambientOcclusion_2263__Fun extends haxe.lang.Function
 {
-	public PixelMap_ambientOcclusion_1816__Fun(apparentridges.Render render, int numSamples1, double[] min, double[] max, double[] data)
+	public PixelMap_ambientOcclusion_2263__Fun(apparentridges.Render render, int numSamples1, double[] min, double[] max, double[] data)
 	{
 		super(3, 0);
 		this.render = render;
@@ -101,7 +101,7 @@ public class PixelMap_ambientOcclusion_1816__Fun extends haxe.lang.Function
 					r_tmax = java.lang.Double.POSITIVE_INFINITY;
 					apparentridges.BVHTree bvh = this.render.mesh.bvh;
 					haxe.lang.Function[] hitNode = new haxe.lang.Function[]{null};
-					hitNode[0] = new apparentridges.PixelMap_ambientOcclusion_1839__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
+					hitNode[0] = new apparentridges.PixelMap_ambientOcclusion_2286__Fun(r_tmin, r_tmax, r_o, r_d, hitNode, bvh);
 					apparentridges.RayHit h1 = ((apparentridges.RayHit) (hitNode[0].__hx_invoke1_o(0.0, bvh.root)) );
 					if (( h1 != null )) 
 					{

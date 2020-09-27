@@ -1,4 +1,4 @@
-all: libs clis tests
+all: libs clis tests docs
 
 libs: java js lua py cpp
 
@@ -50,3 +50,7 @@ tests: _
 
 test-%: _
 	node js/generatesamples.js $*
+
+docs: _
+	haxe apparentridges.ApparentRidges -xml docs/ApparentRidges.xml -D doc-gen
+	haxelib run dox -i docs/ApparentRidges.xml -o docs/pages/ -in "^apparentridges"
