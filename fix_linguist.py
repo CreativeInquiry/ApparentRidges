@@ -51,8 +51,13 @@ yesf = list(set(realglob(allf)))
 yesf = [x for x in yesf if x not in nof]
 yesf = [x for x in yesf if x not in gigf]
 yesf = [x for x in yesf if "docs" not in x]
+yesf = [x for x in yesf if "svg" not in x]
+yesf = [x for x in yesf if "xml" not in x]
 
 open(".gitattributes",'w').write(
    "\n".join([x+" linguist-generated\n"+x+" linguist-detectable=false" for x in nof])
   +"\n".join([x+" linguist-detectable=true" for x in yesf])
+  +"\n*.java linguist-language=Java"
+  +"\n*.c linguist-detectable=false"
+  +"\n*.h linguist-detectable=false"
 )
