@@ -1,9 +1,9 @@
-**/haxe/**/*.*
-**/haxe/*.*
-**/std/**/*.*
-**/std/*.*
-**/_std/**/*.*
-**/_std/*.*
-**/sys/**/*.*
-**/sys/*.*
-hl/**/hl/*.*
+**/haxe/**/*.* linguist-detectable=false
+**/haxe/*.* linguist-detectable=false
+**/std/**/*.* linguist-detectable=false
+**/std/*.* linguist-detectable=false
+**/_std/**/*.* linguist-detectable=false
+**/_std/*.* linguist-detectable=false
+**/sys/**/*.* linguist-detectable=false
+**/sys/*.* linguist-detectable=false
+hl/**/hl/*.* linguist-detectable=false
