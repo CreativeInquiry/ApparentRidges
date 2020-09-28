@@ -1,10 +1,12 @@
-hl/c/hl linguist-detectable=false
-hl/c/_std linguist-detectable=false
-hl/cli/hl linguist-detectable=false
-hl/cli/_std linguist-detectable=false
-hl linguist-detectable=false
-**/*.c linguist-detectable=false
-*.c linguist-language=Java
+hl/c/hl/**/*.* linguist-detectable=false
+hl/c/_std/**/*.* linguist-detectable=false
+hl/cli/hl/**/*.* linguist-detectable=false
+hl/cli/_std/**/*.* linguist-detectable=false
+
+hl/c/hl/*.* linguist-detectable=false
+hl/c/_std/*.* linguist-detectable=false
+hl/cli/hl/*.* linguist-detectable=false
+hl/cli/_std/*.* linguist-detectable=false
 
 cpp/ApparentRidges/include/haxe linguist-detectable=false
 cpp/ApparentRidges/include/sys linguist-detectable=false
