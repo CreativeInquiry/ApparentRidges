@@ -21,5 +21,5 @@ for ig in ignores:
       G += ggg
       # print(ig,ijg,ggg);
 open(".gitattributes",'w').write(
-  "\n".join([x+" linguist-detectable=false" for x in G])
+  "\n".join([x+" linguist-generated\n"+x+" linguist-detectable=false" for x in G])
 )
