@@ -7,7 +7,7 @@
 
 ApparentRidges contains an implementation of the paper [Apparent Ridges for Line Drawing by Judd et al. 2007](http://people.csail.mit.edu/tjudd/apparentridges.html). It also includes a software raycaster to cull occluded lines, a custom algorithm to connect ridge segments into continous polylines suitable for plotters, as well as utilities for manipulating meshes and generating depth/normal/curvature maps.
 
-Written in Haxe and transcompiled for your favourite programming language. Many parts of it are based on the awesome [RTSC](https://rtsc.cs.princeton.edu) viewer, which contains a C++ version of the Apparent Ridges algorithm, as well as Trimesh2, the mesh library used by RTSC.
+Written in Haxe and transcompiled for your favourite programming language. Many parts of it are based on the awesome [RTSC](https://rtsc.cs.princeton.edu) viewer, which contains a C++ version of the Apparent Ridges algorithm, as well as [Trimesh2](https://gfx.cs.princeton.edu/proj/trimesh2/), the mesh library used by RTSC.
 
 #### Check out the [API documentation](https://creativeinquiry.github.io/ApparentRidges/docs/pages/apparentridges/index.html), or an [Online Demo](https://creativeinquiry.github.io/ApparentRidges).
 
