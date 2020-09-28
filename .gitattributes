@@ -26,3 +26,31 @@ cpp/cli/src/apparentridges linguist-detectable=true
 
 java/ApparentRidges/src/haxe linguist-detectable=false
 java/ApparentRidges/src/sys linguist-detectable=false
+
+
+hl/c/hl/**/*.* linguist-generated
+hl/c/_std/**/*.* linguist-generated
+hl/cli/hl/**/*.* linguist-generated
+hl/cli/_std/**/*.* linguist-generated
+
+hl/c/hl/*.* linguist-generated
+hl/c/_std/*.* linguist-generated
+hl/cli/hl/*.* linguist-generated
+hl/cli/_std/*.* linguist-generated
+
+cpp/ApparentRidges/include/haxe linguist-generated
+cpp/ApparentRidges/include/sys linguist-generated
+cpp/ApparentRidges/include/*.h linguist-generated
+cpp/ApparentRidges/src/haxe/*.cpp linguist-generated
+cpp/ApparentRidges/src/sys/*.cpp linguist-generated
+cpp/ApparentRidges/src/*.cpp linguist-generated
+
+cpp/cli/include/haxe linguist-generated
+cpp/cli/include/sys linguist-generated
+cpp/cli/include/*.h linguist-generated
+cpp/cli/src/haxe/*.cpp linguist-generated
+cpp/cli/src/sys/*.cpp linguist-generated
+cpp/cli/src/*.cpp linguist-generated
+
+java/ApparentRidges/src/haxe linguist-generated
+java/ApparentRidges/src/sys linguist-generated
