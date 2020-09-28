@@ -1,21 +1,26 @@
-hl/c/hl/* linguist-detectable=false
-hl/c/_std/* linguist-detectable=false
-hl/cli/hl/* linguist-detectable=false
-hl/cli/_std/* linguist-detectable=false
+hl/c/hl linguist-detectable=false
+hl/c/_std linguist-detectable=false
+hl/cli/hl linguist-detectable=false
+hl/cli/_std linguist-detectable=false
+hl linguist-detectable=false
+**/*.c linguist-detectable=false
+*.c linguist-language=Java
 
-cpp/ApparentRidges/include/haxe/* linguist-detectable=false
-cpp/ApparentRidges/include/sys/* linguist-detectable=false
+cpp/ApparentRidges/include/haxe linguist-detectable=false
+cpp/ApparentRidges/include/sys linguist-detectable=false
 cpp/ApparentRidges/include/*.h linguist-detectable=false
 cpp/ApparentRidges/src/haxe/*.cpp linguist-detectable=false
 cpp/ApparentRidges/src/sys/*.cpp linguist-detectable=false
 cpp/ApparentRidges/src/*.cpp linguist-detectable=false
+cpp/ApparentRidges/src/apparentridges linguist-detectable=true
 
-cpp/cli/include/haxe/* linguist-detectable=false
-cpp/cli/include/sys/* linguist-detectable=false
+cpp/cli/include/haxe linguist-detectable=false
+cpp/cli/include/sys linguist-detectable=false
 cpp/cli/include/*.h linguist-detectable=false
 cpp/cli/src/haxe/*.cpp linguist-detectable=false
 cpp/cli/src/sys/*.cpp linguist-detectable=false
 cpp/cli/src/*.cpp linguist-detectable=false
+cpp/cli/src/apparentridges linguist-detectable=true
 
-java/ApparentRidges/src/haxe/* linguist-detectable=false
-java/ApparentRidges/src/sys/* linguist-detectable=false
+java/ApparentRidges/src/haxe linguist-detectable=false
+java/ApparentRidges/src/sys linguist-detectable=false
