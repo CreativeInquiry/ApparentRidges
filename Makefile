@@ -54,3 +54,6 @@ test-%: _
 docs: _
 	haxe apparentridges.ApparentRidges -xml docs/ApparentRidges.xml -D doc-gen
 	haxelib run dox -i docs/ApparentRidges.xml -o docs/pages/ -in "^apparentridges"
+
+linguist: _
+	python fix_linguist.py

@@ -2,6 +2,8 @@ from glob import glob
 ignores="""\
 **/haxe/**/*.*
 **/haxe/*.*
+**/types/**/*.*
+**/types/*.*
 **/std/**/*.*
 **/std/*.*
 **/_std/**/*.*
